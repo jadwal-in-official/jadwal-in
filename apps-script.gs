@@ -1,9 +1,10 @@
 // Jadwalin - server. Tempel di Google Sheets: Ekstensi > Apps Script. Lalu Deploy > Web app.
 // Sheet "Users", "Sesi", dan "Konten" dibuat/diperbarui otomatis saat pertama dipakai.
 const HEAD = {
-  Users: ["email", "nama", "salt", "hash", "dibuat", "gagal", "kunci_sampai", "kode", "kode_sampai", "foto", "sosmed"],
+  Users: ["email", "nama", "salt", "hash", "dibuat", "gagal", "kunci_sampai", "kode", "kode_sampai", "foto", "sosmed", "target"],
   Sesi: ["token", "email", "kedaluwarsa"],
-  Konten: ["email", "id", "judul", "platform", "tahap", "deadline", "catatan", "sow", "kolab", "fee", "mulai", "kirim"]
+  Konten: ["email", "id", "judul", "platform", "tahap", "deadline", "catatan", "sow", "kolab", "fee", "mulai", "kirim", "brand", "pic", "kontak", "bayar", "dibayar", "keranjang", "boost"],
+  Pengeluaran: ["email", "id", "tanggal", "nama", "jumlah"]
 };
 const ready_ = {};
 
@@ -43,6 +44,7 @@ function out_(o) {
   return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
 }
 function c_(v, n) { return String(v == null ? "" : v).substring(0, n); }
+function s_(v, n) { return c_(v, n).replace(/[\u0000-\u001f]/g, " ").trim(); }
 function norm_(s) { return String(s || "").trim().toLowerCase(); }
 function hash_(pw, salt) {
   let h = salt + pw;
@@ -102,14 +104,20 @@ function tasks_(email) {
   const v = sheet_("Konten").getDataRange().getValues().slice(1);
   return v.filter(r => r[0] === email).map(r => ({
     id: r[1], title: r[2], platform: r[3], stage: r[4], due: r[5], note: r[6], sow: r[7],
-    kolab: r[8] || "", fee: r[9] || "", start: r[10] || "", kirim: r[11] || ""
+    kolab: r[8] || "", fee: r[9] || "", start: r[10] || "", kirim: r[11] || "",
+    brand: r[12] || "", pic: r[13] || "", kontak: r[14] || "", bayar: r[15] || "", dibayar: r[16] || "",
+    keranjang: r[17] || "", boost: r[18] || ""
   }));
+}
+function expenses_(email) {
+  const v = sheet_("Pengeluaran").getDataRange().getValues().slice(1);
+  return v.filter(r => r[0] === email).map(r => ({ id: r[1], date: r[2], name: r[3], amount: r[4] || "" }));
 }
 // Paket data yang dikirim ke web setelah masuk
 function pack_(email, v, token) {
   let links = {};
   try { links = JSON.parse(v[10] || "{}"); } catch (e) {}
-  return { ok: true, token: token, email: email, name: v[1], photo: String(v[9] || ""), links: links, tasks: tasks_(email) };
+  return { ok: true, token: token, email: email, name: v[1], photo: String(v[9] || ""), links: links, tasks: tasks_(email), expenses: expenses_(email), target: String(v[11] || "") };
 }
 
 function register_(d) {
@@ -120,7 +128,7 @@ function register_(d) {
   const name = c_(d.name, 60).trim() || email.split("@")[0];
   const salt = Utilities.getUuid();
   sheet_("Users").appendRow([email, name, salt, hash_(pw, salt), new Date().toISOString(), "0", "0"]);
-  return { ok: true, token: newSession_(email), email: email, name: name, photo: "", links: {}, tasks: [] };
+  return { ok: true, token: newSession_(email), email: email, name: name, photo: "", links: {}, tasks: [], expenses: [], target: "" };
 }
 function login_(d) {
   const email = norm_(d.email), u = findUser_(email);
@@ -146,22 +154,63 @@ function load_(d) {
 function save_(d) {
   const email = sessionEmail_(d.token);
   if (!email) return { ok: false, expired: true, error: "Sesi berakhir" };
+  const W = HEAD.Konten.length;
   const s = sheet_("Konten"), v = s.getDataRange().getValues().slice(1);
-  const keep = v.filter(r => r[0] !== email).map(r => r.slice(0, 12));
-  const add = (Array.isArray(d.tasks) ? d.tasks : []).slice(0, 500).map(t => [
-    email, c_(t.id, 40), c_(t.title, 120), c_(t.platform, 30), c_(t.stage, 20), c_(t.due, 10), c_(t.note, 300), c_(t.sow, 1500),
-    t.kolab === "paid" || t.kolab === "barter" ? t.kolab : "",
-    t.kolab === "paid" ? String(t.fee || "").replace(/\D/g, "").substring(0, 12) : "",
-    /^\d{4}-\d{2}-\d{2}$/.test(String(t.start || "")) ? t.start : "",
-    t.kolab === "barter" && ["belum", "jalan", "sampai"].indexOf(t.kirim) >= 0 ? t.kirim : (t.kolab === "barter" ? "belum" : "")
-  ]);
+  const keep = v.filter(r => r[0] !== email).map(r => r.slice(0, W));
+  const add = (Array.isArray(d.tasks) ? d.tasks : []).slice(0, 500).map(t => {
+    const paid = t.kolab === "paid", barter = t.kolab === "barter", tiktok = t.platform === "TikTok";
+    const bayar = paid ? (["belum", "dp", "lunas"].indexOf(t.bayar) >= 0 ? t.bayar : "belum") : "";
+    return [
+      email, c_(t.id, 40), c_(t.title, 120), c_(t.platform, 30), c_(t.stage, 20), c_(t.due, 10), c_(t.note, 300), c_(t.sow, 1500),
+      paid || barter ? t.kolab : "",
+      paid ? String(t.fee || "").replace(/\D/g, "").substring(0, 12) : "",
+      /^\d{4}-\d{2}-\d{2}$/.test(String(t.start || "")) ? t.start : "",
+      barter && ["belum", "jalan", "sampai"].indexOf(t.kirim) >= 0 ? t.kirim : (barter ? "belum" : ""),
+      paid || barter ? s_(t.brand, 60) : "",
+      paid || barter ? s_(t.pic, 60) : "",
+      paid || barter ? s_(t.kontak, 80) : "",
+      bayar,
+      bayar === "dp" ? String(t.dibayar || "").replace(/\D/g, "").substring(0, 12) : "",
+      tiktok && ["belum", "pasang"].indexOf(t.keranjang) >= 0 ? t.keranjang : "",
+      tiktok ? s_(t.boost, 40) : ""
+    ];
+  });
   const all = keep.concat(add);
-  if (s.getMaxRows() > 1) s.getRange(2, 1, s.getMaxRows() - 1, 12).clearContent();
+  if (s.getMaxRows() > 1) s.getRange(2, 1, s.getMaxRows() - 1, W).clearContent();
   if (all.length) {
     if (s.getMaxRows() < all.length + 1) s.insertRowsAfter(s.getMaxRows(), all.length + 1 - s.getMaxRows());
-    const r = s.getRange(2, 1, all.length, 12);
+    const r = s.getRange(2, 1, all.length, W);
     r.setNumberFormat("@");
     r.setValues(all);
+  }
+  // Pengeluaran: hanya diganti kalau web mengirimnya (web lama tidak menghapus data)
+  if (Array.isArray(d.expenses)) {
+    const es = sheet_("Pengeluaran"), EW = HEAD.Pengeluaran.length;
+    const ev = es.getDataRange().getValues().slice(1);
+    const ekeep = ev.filter(r => r[0] !== email).map(r => r.slice(0, EW));
+    const eadd = d.expenses.slice(0, 500).map(x => [
+      email, c_(x.id, 40),
+      /^\d{4}-\d{2}-\d{2}$/.test(String(x.date || "")) ? x.date : "",
+      s_(x.name, 80),
+      String(x.amount || "").replace(/\D/g, "").substring(0, 12)
+    ]);
+    const eall = ekeep.concat(eadd);
+    if (es.getMaxRows() > 1) es.getRange(2, 1, es.getMaxRows() - 1, EW).clearContent();
+    if (eall.length) {
+      if (es.getMaxRows() < eall.length + 1) es.insertRowsAfter(es.getMaxRows(), eall.length + 1 - es.getMaxRows());
+      const er = es.getRange(2, 1, eall.length, EW);
+      er.setNumberFormat("@");
+      er.setValues(eall);
+    }
+  }
+  // Target profit bulanan
+  if (d.target !== undefined) {
+    const u = findUser_(email);
+    if (u) {
+      const tc = u.s.getRange(u.row, 12);
+      tc.setNumberFormat("@");
+      tc.setValue(String(d.target || "").replace(/\D/g, "").substring(0, 12));
+    }
   }
   return { ok: true };
 }
