@@ -3,7 +3,7 @@
 const HEAD = {
   Users: ["email", "nama", "salt", "hash", "dibuat", "gagal", "kunci_sampai", "kode", "kode_sampai", "foto", "sosmed", "target"],
   Sesi: ["token", "email", "kedaluwarsa"],
-  Konten: ["email", "id", "judul", "platform", "tahap", "deadline", "catatan", "sow", "kolab", "fee", "mulai", "kirim", "brand", "pic", "kontak", "bayar", "dibayar", "keranjang", "boost", "boost_hari", "link"],
+  Konten: ["email", "id", "judul", "platform", "tahap", "deadline", "catatan", "sow", "kolab", "fee", "mulai", "kirim", "brand", "pic", "kontak", "bayar", "dibayar", "keranjang", "boost", "boost_hari", "link_produk", "link_brief"],
   Pengeluaran: ["email", "id", "tanggal", "nama", "jumlah"]
 };
 const ready_ = {};
@@ -113,7 +113,7 @@ function tasks_(email) {
     id: r[1], title: r[2], platform: r[3], stage: r[4], due: r[5], note: r[6], sow: r[7],
     kolab: r[8] || "", fee: r[9] || "", start: r[10] || "", kirim: r[11] || "",
     brand: r[12] || "", pic: r[13] || "", kontak: r[14] || "", bayar: r[15] || "", dibayar: r[16] || "",
-    keranjang: r[17] || "", boost: r[18] || "", boostDays: r[19] || "", link: r[20] || ""
+    keranjang: r[17] || "", boost: r[18] || "", boostDays: r[19] || "", linkProduk: r[20] || "", linkBrief: r[21] || ""
   }));
 }
 function expenses_(email) {
@@ -181,7 +181,8 @@ function save_(d) {
       tiktok && ["ya", "belum", "pasang"].indexOf(t.keranjang) >= 0 ? "ya" : "", // data lama (belum/pasang) jadi "ya"
       tiktok ? s_(t.boost, 60) : "",
       tiktok ? String(t.boostDays || "").replace(/\D/g, "").substring(0, 3) : "",
-      link_(t.link)
+      link_(t.linkProduk || t.link),
+      link_(t.linkBrief)
     ];
   });
   const all = keep.concat(add);
