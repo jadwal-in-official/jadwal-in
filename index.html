@@ -558,12 +558,12 @@ function load(){
     {id:uid(),title:"Video unboxing paket endorse",platform:"YouTube",stage:"editing",due:addDays(1),start:addDays(-4),note:"Tambahkan intro 5 detik",kolab:"paid",fee:"2500000",bayar:"dp",dibayar:"1000000",brand:"Contoh Brand",pic:"Rani",kontak:"081234567890",sow:"- 1 video 60 detik, format 16:9\n- Sebut 3 keunggulan produk\n- 2x revisi\n- Tayang setelah approval klien"},
     {id:uid(),title:"Reels GRWM weekend",platform:"Reels",stage:"produksi",due:addDays(0),note:"Produk dari brand lokal",kolab:"barter",fee:"",kirim:"jalan"},
     {id:uid(),title:"Carousel tips caption",platform:"Instagram",stage:"ide",due:addDays(5),note:"Cari 5 contoh",kolab:"",fee:""},
-    {id:uid(),title:"TikTok tren audio baru",platform:"TikTok",stage:"siap",due:addDays(-1),note:"Jadwalkan jam 19.00",kolab:"",fee:"",keranjang:"ya",boostDays:"7",boost:"",link:"https://example.com/brief"},
+    {id:uid(),title:"TikTok tren audio baru",platform:"TikTok",stage:"siap",due:addDays(-1),note:"Jadwalkan jam 19.00",kolab:"",fee:"",keranjang:"ya",boostDays:"7",boost:"",linkBrief:"https://example.com/brief"},
     {id:uid(),title:"Review produk skincare",platform:"Blog",stage:"selesai",due:addDays(-3),note:"",kolab:"",fee:""}
   ];
 }
 // ====== PENGATURAN ======
-const API_URL="https://script.google.com/macros/s/AKfycbwJsGuIdu_rNxkFqLz4RTg3r_a7EByYN8CCndTKFzaFDKz1S1B5NnMC5TlZ2S6G0W1s/exec"; // URL Web App Google Apps Script (lihat PANDUAN.md)
+const API_URL="https://script.google.com/macros/s/AKfycbyzITfPyvPEQkgQbtW5YW-IpAh-kshkqNxfbaM2XfscJ_Jc_amBofxN1q8v5Syq5PsX/exec"; // URL Web App Google Apps Script (lihat PANDUAN.md)
 // ========================
 const $=id=>document.getElementById(id);
 let token=null,saveTimer=null,mode="login";
@@ -610,7 +610,8 @@ function fieldsHTML(p){
   <label id="${p}keranjangLbl" class="hide">Keranjang kuning<select id="${p}keranjang">${KERANJANG.map(([v,l])=>`<option value="${v}">${l}</option>`).join("")}</select></label>
   <label id="${p}boostDaysLbl" class="hide">Boost code diminta berapa hari<input id="${p}boostDays" class="daysInp" inputmode="numeric" maxlength="3" placeholder="Contoh: 7" autocomplete="off"></label>
   <label id="${p}boostLbl" class="hide">Boost code (dari akun kamu)<input id="${p}boost" maxlength="60" placeholder="Tempel boost code di sini" autocomplete="off"></label>
-  <label class="full">Link produk / link brief (opsional)<input id="${p}link" type="text" maxlength="300" placeholder="https://... (link produk atau brief)" autocomplete="off" inputmode="url"></label>
+  <label class="full">Link produk (opsional)<input id="${p}linkProduk" type="text" maxlength="300" placeholder="https://... (link produk)" autocomplete="off" inputmode="url"></label>
+  <label class="full">Link brief (opsional)<input id="${p}linkBrief" type="text" maxlength="300" placeholder="https://... (link brief)" autocomplete="off" inputmode="url"></label>
   <label class="full">SOW (Scope of Work)<textarea id="${p}sow" maxlength="1000" rows="4" placeholder="Contoh:&#10;- 1 video 30 detik, format 9:16&#10;- 2x revisi&#10;- Tayang paling lambat H+1 setelah approval"></textarea></label>
   <label class="full">Catatan (opsional)<textarea id="${p}note" maxlength="200" placeholder="Brief, kolaborasi, link referensi..."></textarea></label>`;
 }
@@ -630,7 +631,7 @@ function readFields(p){
     fee:paid?digits(v("fee")):"",bayar,dibayar:bayar==="dp"?digits(v("dibayar")):"",
     kirim:kolab==="barter"?v("kirim"):"",
     brand:kolab?v("brand").trim():"",pic:kolab?v("pic").trim():"",kontak:kolab?v("kontak").trim():"",
-    keranjang:tt?kjVal(v("keranjang")):"",boostDays:tt?digits(v("boostDays")).slice(0,3):"",boost:tt?v("boost").trim():"",link:v("link").trim(),
+    keranjang:tt?kjVal(v("keranjang")):"",boostDays:tt?digits(v("boostDays")).slice(0,3):"",boost:tt?v("boost").trim():"",linkProduk:v("linkProduk").trim(),linkBrief:v("linkBrief").trim(),
     note:v("note").trim(),sow:v("sow").trim()};
 }
 function fillFields(p,t){
@@ -638,7 +639,7 @@ function fillFields(p,t){
   set("title",t.title);set("platform",PCOL[t.platform]?t.platform:"Lainnya");set("stage",t.stage);set("start",t.start);set("due",t.due);
   set("kolab",t.kolab||"");set("fee",rupiah(t.fee).replace("Rp ",""));set("bayar",t.bayar||"belum");set("dibayar",rupiah(t.dibayar).replace("Rp ",""));
   set("kirim",t.kirim||"belum");set("brand",t.brand);set("pic",t.pic);set("kontak",t.kontak);
-  set("keranjang",kjVal(t.keranjang));set("boostDays",t.boostDays);set("boost",t.boost);set("link",t.link);set("sow",t.sow);set("note",t.note);
+  set("keranjang",kjVal(t.keranjang));set("boostDays",t.boostDays);set("boost",t.boost);set("linkProduk",t.linkProduk||t.link);set("linkBrief",t.linkBrief); // t.link = data lama, dianggap link produkset("sow",t.sow);set("note",t.note);
   syncKolab(p);syncRange(p);
 }
 $("addFields").innerHTML=fieldsHTML("a");
@@ -871,8 +872,10 @@ function metaHTML(t){
       :t.boostDays?`<span>Boost code diminta${hari}</span>`:"";
     h+=`<div class="meta">${kj}${bc}</div>`;
   }
-  const lu=linkUrl(t.link);
-  if(lu)h+=`<div class="meta"><span>Link</span><a href="${esc(lu)}" target="_blank" rel="noopener noreferrer">${esc(lu.replace(/^https?:\/\//i,"").slice(0,45))}</a><button type="button" class="mini sm" data-copy="${esc(lu)}">Salin</button></div>`;
+  [["Link produk",t.linkProduk||t.link],["Link brief",t.linkBrief]].forEach(([lb,val])=>{
+    const lu=linkUrl(val);
+    if(lu)h+=`<div class="meta"><span>${lb}</span><a href="${esc(lu)}" target="_blank" rel="noopener noreferrer">${esc(lu.replace(/^https?:\/\//i,"").slice(0,45))}</a><button type="button" class="mini sm" data-copy="${esc(lu)}">Salin</button></div>`;
+  });
   return h;
 }
 const hasRange=t=>t.start&&t.start!==t.due;
