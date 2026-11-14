@@ -1,6 +1,6 @@
 # Jadwalin: akun & data di Google Sheets (tanpa Firebase)
 
-File: `index.html` (web), `apps-script.gs` (server), `PANDUAN.md` (ini).
+File: `index.html` (web), `apps-script.gs` (server), `PANDUAN.md` (ini), serta logo: `favicon.ico`, `favicon.svg`, `icon-192.png`, `icon-512.png`, `apple-touch-icon.png`, `og-image.png`, `site.webmanifest`.
 
 ## 1. Pasang server di Google Sheets
 1. Buat Google Sheet baru (nama bebas, misalnya "Database Jadwalin"), atau pakai sheet lama kamu.
@@ -15,10 +15,10 @@ File: `index.html` (web), `apps-script.gs` (server), `PANDUAN.md` (ini).
 
 Setiap kali `apps-script.gs` diubah, buat versi deployment baru (langkah 4), kalau tidak perubahannya tidak aktif.
 
-Sheet lama tidak perlu diubah manual: kolom baru (foto, sosmed, kolab, fee, mulai, kirim, brand, pic, kontak, bayar, dibayar, keranjang, boost) ditambahkan otomatis saat pertama dipakai.
+Sheet lama tidak perlu diubah manual: tab dan kolom baru (tab Pengeluaran, kolom target, foto, sosmed, kolab, fee, mulai, kirim, brand, pic, kontak, bayar, dibayar, keranjang, boost) ditambahkan otomatis saat pertama dipakai.
 
 ## 2. Hosting di Vercel
-1. Taruh `index.html` sendirian di satu folder (misalnya `jadwalin/`).
+1. Taruh `index.html` dan semua file logo (daftar di atas) dalam **satu folder yang sama** (misalnya `jadwalin/`). `apps-script.gs` dan `PANDUAN.md` tidak perlu ikut.
 2. Cara paling mudah: buat repo GitHub berisi file itu, lalu di vercel.com pilih **Add New > Project**, impor repo, **Framework Preset: Other**, kosongkan Build Command, lalu **Deploy**.
 3. Alternatif tanpa GitHub: install Vercel CLI (`npm i -g vercel`), masuk ke folder tadi, jalankan `vercel --prod`.
 4. Setiap kali `index.html` berubah, push ke GitHub (atau jalankan `vercel --prod` lagi) dan Vercel akan memperbarui situsnya.
@@ -26,7 +26,10 @@ Sheet lama tidak perlu diubah manual: kolom baru (foto, sosmed, kolab, fee, mula
 Tidak perlu pengaturan CORS atau environment variable: web memanggil Apps Script langsung dari browser.
 
 ## Fitur
-- **Sidebar**: Jadwal konten, Profil & akun, Ekspor ke spreadsheet (CSV), Impor dari spreadsheet, Ganti tema, Keluar akun. Di HP sidebar muncul lewat tombol menu.
+- **Beranda** (halaman pertama setelah masuk): profit bulan ini (masuk dikurangi keluar), kartu Masuk dan Keluar, **target bulanan** dengan bar progres (tombol *Atur target*), tombol cepat **Job baru** dan **Pengeluaran**, ringkasan "job belum dibayar", dan daftar pengeluaran bulan itu. Tombol panah di atas profit untuk pindah bulan. "Masuk" dihitung dari fee paid collab yang sudah dibayar (DP atau lunas) menurut bulan deadline.
+- **Pengeluaran**: catat nama, jumlah, dan tanggal. Disimpan di tab **Pengeluaran** di Sheet. Target disimpan di kolom **target** tab Users. Keduanya dibuat otomatis.
+- **Bar bawah** di HP: Beranda, Jadwal, Pendapatan, Profil.
+- **Sidebar**: Beranda, Jadwal konten, Profil & akun, Ekspor ke spreadsheet (CSV), Impor dari spreadsheet, Ganti tema, Keluar akun. Di HP sidebar muncul lewat tombol menu.
 - **Edit konten**: tombol **Edit** di tiap kartu membuka jendela untuk mengubah semua isian (judul, platform, tahap, deadline, kerja sama, fee, SOW, catatan).
 - **Jenis kerja sama**: pilih *Tanpa kerja sama*, *Paid collab*, atau *Barter*. Untuk Paid collab muncul isian **Fee**, dan kartu menampilkan tulisan seperti "Paid collab · Fee Rp 2.500.000".
 - **Status barang (barter)**: pilih *Belum dikirim*, *Masih dalam perjalanan*, atau *Sudah sampai*. Statusnya tampil sebagai label berwarna di kartu.
@@ -52,3 +55,8 @@ Tidak perlu pengaturan CORS atau environment variable: web memanggil Apps Script
 - Keamanannya lebih sederhana daripada Firebase: tidak ada verifikasi email saat daftar, dan hash memakai SHA-256 berulang (bukan bcrypt). Cocok untuk tim kecil.
 - Apps Script agak lambat (1 sampai 3 detik per aksi) dan punya kuota harian. Maksimal 500 konten per akun.
 - Foto profil disimpan langsung di sheet dalam ukuran kecil (sekitar 10 sampai 30 KB).
+
+## Logo saat link dibagikan
+- Di bagian `<head>` `index.html` ada tag `og:image` dan `twitter:image`. Ganti semua `https://GANTI-DOMAINMU.vercel.app` dengan alamat situsmu yang asli (pakai `https://`, tanpa garis miring di akhir pada alamat gambar). Alamat gambar harus lengkap, kalau relatif WhatsApp dan sosmed tidak menampilkannya.
+- Setelah deploy, cek tampilannya: tempel link ke WhatsApp atau Telegram. Kalau masih tampil lama, itu cache; bisa diperbarui lewat debugger Facebook Sharing atau tunggu beberapa jam.
+- Logo di hasil pencarian Google (ikon kecil di sebelah judul) butuh waktu: Google harus mengunjungi ulang situsmu, biasanya beberapa hari sampai beberapa minggu. Syaratnya `favicon.ico` bisa dibuka di `alamatmu/favicon.ico` dan halaman tidak diblokir dari pengindeksan.
