@@ -15,7 +15,7 @@ File: `index.html` (web), `apps-script.gs` (server), `PANDUAN.md` (ini).
 
 Setiap kali `apps-script.gs` diubah, buat versi deployment baru (langkah 4), kalau tidak perubahannya tidak aktif.
 
-Sheet lama tidak perlu diubah manual: kolom baru (foto, sosmed, kolab, fee, mulai, kirim) ditambahkan otomatis saat pertama dipakai.
+Sheet lama tidak perlu diubah manual: kolom baru (foto, sosmed, kolab, fee, mulai, kirim, brand, pic, kontak, bayar, dibayar, keranjang, boost) ditambahkan otomatis saat pertama dipakai.
 
 ## 2. Hosting di Vercel
 1. Taruh `index.html` sendirian di satu folder (misalnya `jadwalin/`).
@@ -31,6 +31,10 @@ Tidak perlu pengaturan CORS atau environment variable: web memanggil Apps Script
 - **Jenis kerja sama**: pilih *Tanpa kerja sama*, *Paid collab*, atau *Barter*. Untuk Paid collab muncul isian **Fee**, dan kartu menampilkan tulisan seperti "Paid collab · Fee Rp 2.500.000".
 - **Status barang (barter)**: pilih *Belum dikirim*, *Masih dalam perjalanan*, atau *Sudah sampai*. Statusnya tampil sebagai label berwarna di kartu.
 - **Rentang tanggal**: isi *Mulai* (opsional) dan *Deadline / sampai tanggal*. Kartu menampilkan "Periode 10 Nov – 20 Nov" bila keduanya diisi.
+- **Status pembayaran (paid collab)**: pilih *Belum dibayar*, *DP masuk* (isi jumlah yang sudah dibayar), atau *Lunas*. Statusnya tampil sebagai label di kartu.
+- **Info brand dan PIC**: isi nama brand, nama PIC, dan kontak PIC untuk konten kerja sama (paid atau barter). Kontak berupa nomor WA atau email otomatis menjadi tautan.
+- **TikTok**: kalau platform TikTok dipilih, muncul isian **Keranjang kuning** (tanpa, belum dipasang, sudah dipasang) dan **Boost code**. Boost code di kartu punya tombol **Salin**.
+- **Pendapatan**: menu baru di sidebar. Menampilkan total fee, yang sudah masuk, dan yang belum masuk per bulan (menurut bulan deadline), plus total yang belum masuk dari semua bulan. Status pembayaran bisa diubah langsung dari daftar.
 - **Tampilan HP**: kolom papan tersusun ke bawah dan bisa dilipat dengan mengetuk judul kolom; form tersusun satu kolom.
 - **Profil**: foto profil (otomatis dikecilkan), nama, dan tautan TikTok, Instagram, Threads, YouTube, X, serta website. Boleh isi `@username` atau link lengkap.
 - **Ganti kata sandi**: di halaman Profil, wajib mengisi kata sandi lama. Perangkat lain otomatis keluar.
