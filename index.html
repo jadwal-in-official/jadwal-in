@@ -530,7 +530,11 @@ dialog .btns{margin-top:14px;justify-content:flex-end}
 
 <script>
 const STAGES=[["ide","Ide"],["produksi","Produksi"],["editing","Editing"],["siap","Siap upload"],["selesai","Selesai"]];
-const PCOL={TikTok:"#12C4AE",Instagram:"#FF4D8D",YouTube:"#FF7A3D",Reels:"#FFC82C",Shorts:"#C7B8FF",Shopee:"#FF6B4A",Threads:"#7DD3FC",Blog:"#9BE15D",Lainnya:"#D9D6EE"};
+const PCOL={TikTok:"#12C4AE",YouTube:"#FF7A3D","Instagram Carousel":"#FF4D8D","Instagram Story":"#FF9BC2","Instagram Reels":"#FFC82C",Shopee:"#FF6B4A",Threads:"#7DD3FC",Blog:"#9BE15D",Lainnya:"#D9D6EE"};
+// Nama platform lama otomatis dipindah ke nama baru (Shorts sudah termasuk YouTube)
+const PLAT_LAMA={"Instagram":"Instagram Carousel","Reels":"Instagram Reels","Shorts":"YouTube"};
+function migrasi(){let n=0;tasks.forEach(t=>{const p=PLAT_LAMA[t.platform];if(p){t.platform=p;n++}});return n}
+const isIgFeed=p=>p==="Instagram Carousel"||p==="Instagram Reels";
 const SOC=[
   ["tiktok","TikTok","https://www.tiktok.com/@","@username"],
   ["instagram","Instagram","https://www.instagram.com/","@username"],
@@ -553,11 +557,11 @@ const rupiah=d=>d?"Rp "+Number(d).toLocaleString("id-ID"):"";
 
 function load(){
   try{expenses=JSON.parse(localStorage.getItem(KEY+":exp"))||[];target=localStorage.getItem(KEY+":target")||""}catch(e){}
-  try{const r=localStorage.getItem(KEY);if(r){tasks=JSON.parse(r);return}}catch(e){}
+  try{const r=localStorage.getItem(KEY);if(r){tasks=JSON.parse(r);migrasi();return}}catch(e){}
   tasks=[
     {id:uid(),title:"Video unboxing paket endorse",platform:"YouTube",stage:"editing",due:addDays(1),start:addDays(-4),note:"Tambahkan intro 5 detik",kolab:"paid",fee:"2500000",bayar:"dp",dibayar:"1000000",brand:"Contoh Brand",pic:"Rani",kontak:"081234567890",sow:"- 1 video 60 detik, format 16:9\n- Sebut 3 keunggulan produk\n- 2x revisi\n- Tayang setelah approval klien"},
-    {id:uid(),title:"Reels GRWM weekend",platform:"Reels",stage:"produksi",due:addDays(0),note:"Produk dari brand lokal",kolab:"barter",fee:"",kirim:"jalan"},
-    {id:uid(),title:"Carousel tips caption",platform:"Instagram",stage:"ide",due:addDays(5),note:"Cari 5 contoh",kolab:"",fee:""},
+    {id:uid(),title:"Reels GRWM weekend",platform:"Instagram Reels",stage:"produksi",due:addDays(0),note:"Produk dari brand lokal",kolab:"barter",fee:"",kirim:"jalan"},
+    {id:uid(),title:"Carousel tips caption",platform:"Instagram Carousel",stage:"ide",due:addDays(5),note:"Cari 5 contoh",kolab:"",fee:""},
     {id:uid(),title:"TikTok tren audio baru",platform:"TikTok",stage:"siap",due:addDays(-1),note:"Jadwalkan jam 19.00",kolab:"",fee:"",keranjang:"ya",boostDays:"7",boost:"",linkBrief:"https://example.com/brief"},
     {id:uid(),title:"Review produk skincare",platform:"Blog",stage:"selesai",due:addDays(-3),note:"",kolab:"",fee:""}
   ];
@@ -591,6 +595,9 @@ function save(){
 const KIRIM=[["belum","Belum dikirim"],["jalan","Masih dalam perjalanan"],["sampai","Sudah sampai"]];
 const BAYAR=[["belum","Belum dibayar"],["dp","DP masuk"],["lunas","Lunas"]];
 const KERANJANG=[["","Tanpa keranjang kuning"],["ya","Dengan keranjang kuning"]];
+const KERANJANG_PUTIH=[["","Tanpa keranjang putih"],["ya","Dengan keranjang putih"]];
+const TAPLINK=[["","Tanpa Taplink"],["ya","Dengan Taplink"]];
+const yaVal=v=>v==="ya"?"ya":"";
 const kjVal=v=>(v==="ya"||v==="pasang"||v==="belum")?"ya":""; // data lama (belum/pasang) otomatis jadi "dengan keranjang kuning"
 function fieldsHTML(p){
   return `
@@ -608,9 +615,11 @@ function fieldsHTML(p){
   <label id="${p}picLbl" class="hide">Nama PIC<input id="${p}pic" maxlength="60" placeholder="Contoh: Rani" autocomplete="off"></label>
   <label id="${p}kontakLbl" class="hide">Kontak PIC (WA atau email)<input id="${p}kontak" maxlength="80" placeholder="0812xxxxxxxx atau rani@brand.com" autocomplete="off"></label>
   <label id="${p}keranjangLbl" class="hide">Keranjang kuning<select id="${p}keranjang">${KERANJANG.map(([v,l])=>`<option value="${v}">${l}</option>`).join("")}</select></label>
+  <label id="${p}keranjangPutihLbl" class="hide">Keranjang putih<select id="${p}keranjangPutih">${KERANJANG_PUTIH.map(([v,l])=>`<option value="${v}">${l}</option>`).join("")}</select></label>
+  <label id="${p}taplinkLbl" class="hide">Taplink<select id="${p}taplink">${TAPLINK.map(([v,l])=>`<option value="${v}">${l}</option>`).join("")}</select></label>
   <label id="${p}boostDaysLbl" class="hide">Boost code diminta berapa hari<input id="${p}boostDays" class="daysInp" inputmode="numeric" maxlength="3" placeholder="Contoh: 7" autocomplete="off"></label>
   <label id="${p}boostLbl" class="hide">Boost code (dari akun kamu)<input id="${p}boost" maxlength="60" placeholder="Tempel boost code di sini" autocomplete="off"></label>
-  <label class="full">Link produk (opsional)<input id="${p}linkProduk" type="text" maxlength="300" placeholder="https://... (link produk)" autocomplete="off" inputmode="url"></label>
+  <label class="full">Link produk (opsional, boleh lebih dari satu, satu link per baris)<textarea id="${p}linkProduk" rows="3" maxlength="3000" placeholder="https://... (link produk 1)&#10;https://... (link produk 2)" autocomplete="off"></textarea></label>
   <label class="full">Link brief (opsional)<input id="${p}linkBrief" type="text" maxlength="300" placeholder="https://... (link brief)" autocomplete="off" inputmode="url"></label>
   <label class="full">SOW (Scope of Work)<textarea id="${p}sow" maxlength="1000" rows="4" placeholder="Contoh:&#10;- 1 video 30 detik, format 9:16&#10;- 2x revisi&#10;- Tayang paling lambat H+1 setelah approval"></textarea></label>
   <label class="full">Catatan (opsional)<textarea id="${p}note" maxlength="200" placeholder="Brief, kolaborasi, link referensi..."></textarea></label>`;
@@ -622,6 +631,7 @@ function syncKolab(p){
   show("kirimLbl",k==="barter");
   show("brandLbl",!!k);show("picLbl",!!k);show("kontakLbl",!!k);
   show("keranjangLbl",tt);show("boostDaysLbl",tt);show("boostLbl",tt);
+  const pf=$(p+"platform").value;show("keranjangPutihLbl",isIgFeed(pf));show("taplinkLbl",pf==="Instagram Story");
   show("stageLbl",!(k==="barter"&&$(p+"kirim").value!=="sampai"));
 }
 function syncRange(p){$(p+"due").min=$(p+"start").value||""}
@@ -631,7 +641,7 @@ function readFields(p){
     fee:paid?digits(v("fee")):"",bayar,dibayar:bayar==="dp"?digits(v("dibayar")):"",
     kirim:kolab==="barter"?v("kirim"):"",
     brand:kolab?v("brand").trim():"",pic:kolab?v("pic").trim():"",kontak:kolab?v("kontak").trim():"",
-    keranjang:tt?kjVal(v("keranjang")):"",boostDays:tt?digits(v("boostDays")).slice(0,3):"",boost:tt?v("boost").trim():"",linkProduk:v("linkProduk").trim(),linkBrief:v("linkBrief").trim(),
+    keranjang:tt?kjVal(v("keranjang")):"",boostDays:tt?digits(v("boostDays")).slice(0,3):"",boost:tt?v("boost").trim():"",linkProduk:v("linkProduk").split(/\r?\n/).map(x=>x.trim()).filter(Boolean).slice(0,10).join("\n"),keranjangPutih:isIgFeed(v("platform"))?yaVal(v("keranjangPutih")):"",taplink:v("platform")==="Instagram Story"?yaVal(v("taplink")):"",linkBrief:v("linkBrief").trim(),
     note:v("note").trim(),sow:v("sow").trim()};
 }
 function fillFields(p,t){
@@ -639,7 +649,7 @@ function fillFields(p,t){
   set("title",t.title);set("platform",PCOL[t.platform]?t.platform:"Lainnya");set("stage",t.stage);set("start",t.start);set("due",t.due);
   set("kolab",t.kolab||"");set("fee",rupiah(t.fee).replace("Rp ",""));set("bayar",t.bayar||"belum");set("dibayar",rupiah(t.dibayar).replace("Rp ",""));
   set("kirim",t.kirim||"belum");set("brand",t.brand);set("pic",t.pic);set("kontak",t.kontak);
-  set("keranjang",kjVal(t.keranjang));set("boostDays",t.boostDays);set("boost",t.boost);set("linkProduk",t.linkProduk||t.link);set("linkBrief",t.linkBrief);
+  set("keranjang",kjVal(t.keranjang));set("keranjangPutih",yaVal(t.keranjangPutih));set("taplink",yaVal(t.taplink));set("boostDays",t.boostDays);set("boost",t.boost);set("linkProduk",t.linkProduk||t.link);set("linkBrief",t.linkBrief);
   set("sow",t.sow);set("note",t.note); // t.link (data lama) dianggap link produk
   syncKolab(p);syncRange(p);
 }
@@ -767,13 +777,13 @@ $("themeBtn").addEventListener("click",()=>{
 /* ---------- akun ---------- */
 function enter(r){
   token=r.token;try{localStorage.setItem(KEY+":token",token)}catch(e){}
-  tasks=r.tasks||[];try{localStorage.setItem(KEY,JSON.stringify(tasks))}catch(e){}
+  tasks=r.tasks||[];const berubah=migrasi();try{localStorage.setItem(KEY,JSON.stringify(tasks))}catch(e){}
   if(Array.isArray(r.expenses)){expenses=r.expenses;try{localStorage.setItem(KEY+":exp",JSON.stringify(expenses))}catch(e){}}
   if(typeof r.target==="string"){target=r.target;try{localStorage.setItem(KEY+":target",target)}catch(e){}}
   profile={name:r.name||r.email,email:r.email,photo:r.photo||"",links:r.links||{}};
   document.body.classList.add("authed");
   $("boot").classList.add("hide");$("auth").classList.add("hide");$("app").classList.remove("hide");
-  paintProfile();setSync("Tersinkron dengan spreadsheet ✓","ok");showView("beranda");render();
+  paintProfile();setSync("Tersinkron dengan spreadsheet ✓","ok");showView("beranda");render();if(berubah)save();
 }
 function showAuth(msg){
   document.body.classList.remove("authed");closeDrawer();
@@ -873,7 +883,10 @@ function metaHTML(t){
       :t.boostDays?`<span>Boost code diminta${hari}</span>`:"";
     h+=`<div class="meta">${kj}${bc}</div>`;
   }
-  [["Link produk",t.linkProduk||t.link],["Link brief",t.linkBrief]].forEach(([lb,val])=>{
+  if(isIgFeed(t.platform)&&yaVal(t.keranjangPutih))h+=`<div class="meta"><span class="bk pasang">Keranjang putih</span></div>`;
+  if(t.platform==="Instagram Story"&&yaVal(t.taplink))h+=`<div class="meta"><span class="bk pasang">Dengan Taplink</span></div>`;
+  const lp=String(t.linkProduk||t.link||"").split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+  [...lp.map((u,i)=>["Link produk"+(lp.length>1?" "+(i+1):""),u]),["Link brief",t.linkBrief]].forEach(([lb,val])=>{
     const lu=linkUrl(val);
     if(lu)h+=`<div class="meta"><span>${lb}</span><a href="${esc(lu)}" target="_blank" rel="noopener noreferrer">${esc(lu.replace(/^https?:\/\//i,"").slice(0,45))}</a><button type="button" class="mini sm" data-copy="${esc(lu)}">Salin</button></div>`;
   });
