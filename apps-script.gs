@@ -3,7 +3,7 @@
 const HEAD = {
   Users: ["email", "nama", "salt", "hash", "dibuat", "gagal", "kunci_sampai", "kode", "kode_sampai", "foto", "sosmed", "target"],
   Sesi: ["token", "email", "kedaluwarsa"],
-  Konten: ["email", "id", "judul", "platform", "tahap", "deadline", "catatan", "sow", "kolab", "fee", "mulai", "kirim", "brand", "pic", "kontak", "bayar", "dibayar", "keranjang", "boost", "boost_hari", "link_produk", "link_brief"],
+  Konten: ["email", "id", "judul", "platform", "tahap", "deadline", "catatan", "sow", "kolab", "fee", "mulai", "kirim", "brand", "pic", "kontak", "bayar", "dibayar", "keranjang", "boost", "boost_hari", "link_produk", "link_brief", "keranjang_putih", "taplink"],
   Pengeluaran: ["email", "id", "tanggal", "nama", "jumlah"]
 };
 const ready_ = {};
@@ -51,6 +51,10 @@ function link_(v) {
   if (!x) return "";
   if (/^[a-z][a-z0-9+.\-]*:/i.test(x) && !/^https?:\/\//i.test(x)) return "";
   return x;
+}
+// Beberapa link produk: satu link per baris, maksimal 10
+function links_(v) {
+  return String(v == null ? "" : v).split(/\r?\n/).map(x => link_(x)).filter(Boolean).slice(0, 10).join("\n").substring(0, 3000);
 }
 function norm_(s) { return String(s || "").trim().toLowerCase(); }
 function hash_(pw, salt) {
@@ -113,7 +117,7 @@ function tasks_(email) {
     id: r[1], title: r[2], platform: r[3], stage: r[4], due: r[5], note: r[6], sow: r[7],
     kolab: r[8] || "", fee: r[9] || "", start: r[10] || "", kirim: r[11] || "",
     brand: r[12] || "", pic: r[13] || "", kontak: r[14] || "", bayar: r[15] || "", dibayar: r[16] || "",
-    keranjang: r[17] || "", boost: r[18] || "", boostDays: r[19] || "", linkProduk: r[20] || "", linkBrief: r[21] || ""
+    keranjang: r[17] || "", boost: r[18] || "", boostDays: r[19] || "", linkProduk: r[20] || "", linkBrief: r[21] || "", keranjangPutih: r[22] || "", taplink: r[23] || ""
   }));
 }
 function expenses_(email) {
@@ -163,9 +167,10 @@ function save_(d) {
   if (!email) return { ok: false, expired: true, error: "Sesi berakhir" };
   const W = HEAD.Konten.length;
   const s = sheet_("Konten"), v = s.getDataRange().getValues().slice(1);
-  const keep = v.filter(r => r[0] !== email).map(r => r.slice(0, W));
+  const keep = v.filter(r => r[0] !== email).map(r => { const x = r.slice(0, W); while (x.length < W) x.push(""); return x; });
   const add = (Array.isArray(d.tasks) ? d.tasks : []).slice(0, 500).map(t => {
     const paid = t.kolab === "paid", barter = t.kolab === "barter", tiktok = t.platform === "TikTok";
+    const igFeed = ["Instagram Carousel", "Instagram Reels", "Instagram", "Reels"].indexOf(t.platform) >= 0, igStory = t.platform === "Instagram Story";
     const bayar = paid ? (["belum", "dp", "lunas"].indexOf(t.bayar) >= 0 ? t.bayar : "belum") : "";
     return [
       email, c_(t.id, 40), c_(t.title, 120), c_(t.platform, 30), c_(t.stage, 20), c_(t.due, 10), c_(t.note, 300), c_(t.sow, 1500),
@@ -181,8 +186,10 @@ function save_(d) {
       tiktok && ["ya", "belum", "pasang"].indexOf(t.keranjang) >= 0 ? "ya" : "", // data lama (belum/pasang) jadi "ya"
       tiktok ? s_(t.boost, 60) : "",
       tiktok ? String(t.boostDays || "").replace(/\D/g, "").substring(0, 3) : "",
-      link_(t.linkProduk || t.link),
-      link_(t.linkBrief)
+      links_(t.linkProduk || t.link),
+      link_(t.linkBrief),
+      igFeed && t.keranjangPutih === "ya" ? "ya" : "", // keranjang putih: Instagram Carousel / Reels
+      igStory && t.taplink === "ya" ? "ya" : ""        // Taplink: Instagram Story
     ];
   });
   const all = keep.concat(add);
