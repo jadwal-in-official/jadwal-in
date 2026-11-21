@@ -639,7 +639,8 @@ function fillFields(p,t){
   set("title",t.title);set("platform",PCOL[t.platform]?t.platform:"Lainnya");set("stage",t.stage);set("start",t.start);set("due",t.due);
   set("kolab",t.kolab||"");set("fee",rupiah(t.fee).replace("Rp ",""));set("bayar",t.bayar||"belum");set("dibayar",rupiah(t.dibayar).replace("Rp ",""));
   set("kirim",t.kirim||"belum");set("brand",t.brand);set("pic",t.pic);set("kontak",t.kontak);
-  set("keranjang",kjVal(t.keranjang));set("boostDays",t.boostDays);set("boost",t.boost);set("linkProduk",t.linkProduk||t.link);set("linkBrief",t.linkBrief); // t.link = data lama, dianggap link produkset("sow",t.sow);set("note",t.note);
+  set("keranjang",kjVal(t.keranjang));set("boostDays",t.boostDays);set("boost",t.boost);set("linkProduk",t.linkProduk||t.link);set("linkBrief",t.linkBrief);
+  set("sow",t.sow);set("note",t.note); // t.link (data lama) dianggap link produk
   syncKolab(p);syncRange(p);
 }
 $("addFields").innerHTML=fieldsHTML("a");
