@@ -254,6 +254,14 @@ dialog.sm{width:min(420px,94vw)}
 .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
 @media(max-width:980px){.pgrid{grid-template-columns:1fr}}
 .panel h3{font-size:22px;margin-bottom:14px}
+.dl{display:flex;align-items:center;gap:10px;width:100%;padding:10px 0;border:0;border-top:2px solid var(--line);background:none;color:var(--ink);text-align:left;cursor:pointer;font:inherit}
+.dl:first-child{border-top:0;padding-top:0}
+.dl .dlt{flex:1;min-width:0}
+.dl .dlt b{display:block;overflow-wrap:anywhere}
+.dl .dlt small{display:block;color:var(--muted);font-weight:700;font-size:13px}
+.dl:hover .dlt b{color:var(--accent)}
+.addbar{margin-bottom:18px}
+.addbar.hide{display:none}
 .avrow{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
 .stack{display:flex;flex-direction:column;gap:12px}
 .links{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
@@ -415,6 +423,11 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;ba
             </div>
           </div>
 
+          <div class="panel">
+            <h3 id="hDlT">Deadline terdekat</h3>
+            <div id="hDeadline"></div>
+          </div>
+
           <div class="panel profit">
             <div class="pmonth">
               <button class="mini" type="button" id="hPrev" aria-label="Bulan sebelumnya">&lsaquo;</button>
@@ -459,9 +472,10 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;ba
           </div>
           <div class="stats" id="stats"></div>
 
-          <form id="f" class="panel fgrid">
+          <div class="addbar" id="addBar"><button class="btn" type="button" id="addToggle" aria-expanded="false" aria-controls="f">+ Tambah jadwal konten</button></div>
+          <form id="f" class="panel fgrid hide">
             <div id="addFields" class="contents"></div>
-            <div class="full"><button class="btn" type="submit">Tambah ke jadwal</button></div>
+            <div class="full"><button class="btn" type="submit">Tambah ke jadwal</button> <button class="mini" type="button" id="addCancel">Batal</button></div>
           </form>
 
           <div class="tools" id="tools"></div>
@@ -637,7 +651,7 @@ function load(){
   ];
 }
 // ====== PENGATURAN ======
-const API_URL="https://script.google.com/macros/s/AKfycbz0-6CsMOutApAowBVnWXFKvdPsduWEek4IGfvTTKFWDa3lp3de1NniJcdPF2AcKNNL/exec"; // URL Web App Google Apps Script (lihat PANDUAN.md)
+const API_URL="https://script.google.com/macros/s/AKfycbx8E9ZusUmyFNovxtl6ppMTDTgN7aVSTLu-mOF_0mozD48-eZaiBVuJyKREnGau2Dw/exec"; // URL Web App Google Apps Script (lihat PANDUAN.md)
 // ========================
 const $=id=>document.getElementById(id);
 let token=null,saveTimer=null,mode="login",dataVer=null,pending=false;
@@ -975,6 +989,8 @@ $("authForm").addEventListener("submit",async e=>{
 
 /* ---------- jadwal ---------- */
 const waiting=t=>t.kolab==="barter"&&t.kirim!=="sampai";
+const NEAR_DAYS=3; // job dengan deadline <= sekian hari tampil di Beranda
+const daysLeft=t=>Math.round((new Date(t.due+"T00:00:00")-new Date(iso(new Date())+"T00:00:00"))/864e5);
 const effStage=t=>waiting(t)?"menunggu":t.stage;
 function dueInfo(t){
   if(effStage(t)==="selesai")return["Selesai","done"];
@@ -1151,12 +1167,24 @@ function renderHome(){
   const owed=tasks.filter(t=>t.kolab==="paid"&&feeOf(t)-gotOf(t)>0),owedSum=owed.reduce((n,t)=>n+feeOf(t)-gotOf(t),0);
   $("hOwedT").textContent=owed.length?owed.length+" job belum dibayar":"Semua job sudah dibayar";
   $("hOwedS").textContent=owed.length?"Total "+money(owedSum):"Tidak ada tagihan tertunda";
+  const near=tasks.filter(t=>effStage(t)!=="selesai"&&t.due&&daysLeft(t)<=NEAR_DAYS).sort((a,b)=>String(a.due).localeCompare(String(b.due)));
+  $("hDlT").textContent=near.length?"Deadline terdekat ("+near.length+")":"Deadline terdekat";
+  $("hDeadline").innerHTML=near.length?near.map(t=>{
+    const [txt,cls]=dueInfo(t),info=[t.brand,"Deadline "+fmt(t.due)].filter(Boolean).map(esc).join(" · ");
+    return`<button type="button" class="dl" data-view="jadwal"><span class="tag" style="background:${PCOL[t.platform]||PCOL.Lainnya}">${esc(t.platform)}</span><span class="dlt"><b>${esc(t.title)}</b><small>${info}</small></span><span class="due ${cls}">${txt}</span></button>`}).join(""):`<div class="empty">Tidak ada deadline dalam ${NEAR_DAYS} hari ke depan.</div>`;
   $("hExpT").textContent="Pengeluaran "+ymLabel(homeMonth);
   $("hExpList").innerHTML=exps.length?exps.map(x=>`<div class="erow"><div><b>${esc(x.name)}</b><small>${fmt(x.date)}</small></div><span class="amt">${money(x.amount)}</span><button class="mini del" type="button" data-delexp="${esc(x.id)}" aria-label="Hapus ${esc(x.name)}">Hapus</button></div>`).join(""):'<div class="empty">Belum ada pengeluaran bulan ini. Tekan Pengeluaran di atas untuk mencatat.</div>';
 }
 $("hPrev").addEventListener("click",()=>{homeMonth=shiftYm(homeMonth,-1);renderHome()});
 $("hNext").addEventListener("click",()=>{homeMonth=shiftYm(homeMonth,1);renderHome()});
-$("hNewJob").addEventListener("click",()=>{showView("jadwal");$("atitle").focus({preventScroll:true});$("f").scrollIntoView({block:"start"})});
+function openAdd(){
+  $("f").classList.remove("hide");$("addBar").classList.add("hide");$("addToggle").setAttribute("aria-expanded","true");
+  $("f").scrollIntoView({block:"start"});$("atitle").focus({preventScroll:true});
+}
+function closeAdd(){$("f").classList.add("hide");$("addBar").classList.remove("hide");$("addToggle").setAttribute("aria-expanded","false")}
+$("addToggle").addEventListener("click",openAdd);
+$("addCancel").addEventListener("click",()=>{$("f").reset();$("adue").value=addDays(3);syncKolab("a");syncRange("a");closeAdd()});
+$("hNewJob").addEventListener("click",()=>{showView("jadwal");openAdd()});
 $("hNewExp").addEventListener("click",()=>{
   $("xf").reset();$("xMsg").textContent="";
   const cur=iso(new Date()).slice(0,7);
@@ -1186,7 +1214,7 @@ $("tgf").addEventListener("submit",e=>{e.preventDefault();target=digits($("tgval
 $("f").addEventListener("submit",e=>{
   e.preventDefault();
   tasks.push({id:uid(),...readFields("a")});
-  save();e.target.reset();$("adue").value=addDays(3);syncKolab("a");syncRange("a");render();
+  save();e.target.reset();$("adue").value=addDays(3);syncKolab("a");syncRange("a");render();closeAdd();
 });
 $("board").addEventListener("change",e=>{
   if(e.target.dataset.sow){const s=tasks.find(x=>x.id===e.target.dataset.sow);if(s){s.sow=e.target.value.trim();save()}return}
