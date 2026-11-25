@@ -1,7 +1,7 @@
 // Jadwalin - server. Tempel di Google Sheets: Ekstensi > Apps Script. Lalu Deploy > Web app.
 // Sheet "Users", "Sesi", dan "Konten" dibuat/diperbarui otomatis saat pertama dipakai.
 const HEAD = {
-  Users: ["email", "nama", "salt", "hash", "dibuat", "gagal", "kunci_sampai", "kode", "kode_sampai", "foto", "sosmed", "target"],
+  Users: ["email", "nama", "salt", "hash", "dibuat", "gagal", "kunci_sampai", "kode", "kode_sampai", "foto", "sosmed", "target", "versi"],
   Sesi: ["token", "email", "kedaluwarsa"],
   Konten: ["email", "id", "judul", "platform", "tahap", "deadline", "catatan", "sow", "kolab", "fee", "mulai", "kirim", "brand", "pic", "kontak", "bayar", "dibayar", "keranjang", "boost", "boost_hari", "link_produk", "link_brief", "deadline_mode", "deadline_hari", "tgl_sampai"],
   Pengeluaran: ["email", "id", "tanggal", "nama", "jumlah"]
@@ -125,7 +125,7 @@ function expenses_(email) {
 function pack_(email, v, token) {
   let links = {};
   try { links = JSON.parse(v[10] || "{}"); } catch (e) {}
-  return { ok: true, token: token, email: email, name: v[1], photo: String(v[9] || ""), links: links, tasks: tasks_(email), expenses: expenses_(email), target: String(v[11] || "") };
+  return { ok: true, token: token, email: email, name: v[1], photo: String(v[9] || ""), links: links, tasks: tasks_(email), expenses: expenses_(email), target: String(v[11] || ""), version: String(v[12] || "0") };
 }
 
 function register_(d) {
@@ -136,7 +136,7 @@ function register_(d) {
   const name = c_(d.name, 60).trim() || email.split("@")[0];
   const salt = Utilities.getUuid();
   sheet_("Users").appendRow([email, name, salt, hash_(pw, salt), new Date().toISOString(), "0", "0"]);
-  return { ok: true, token: newSession_(email), email: email, name: name, photo: "", links: {}, tasks: [], expenses: [], target: "" };
+  return { ok: true, token: newSession_(email), email: email, name: name, photo: "", links: {}, tasks: [], expenses: [], target: "", version: "0" };
 }
 function login_(d) {
   const email = norm_(d.email), u = findUser_(email);
@@ -162,6 +162,14 @@ function load_(d) {
 function save_(d) {
   const email = sessionEmail_(d.token);
   if (!email) return { ok: false, expired: true, error: "Sesi berakhir" };
+  // Cek versi: tolak simpanan dari data usang (mis. perangkat lain sudah menyimpan lebih dulu)
+  const cu = findUser_(email);
+  if (!cu) return { ok: false, expired: true, error: "Akun tidak ditemukan" };
+  const cur = String(cu.v[12] || "0");
+  if (d.version !== undefined && d.version !== null && String(d.version) !== cur) {
+    return { ok: false, conflict: true, version: cur, error: "Data sudah berubah di perangkat lain",
+      latest: { tasks: tasks_(email), expenses: expenses_(email), target: String(cu.v[11] || ""), version: cur } };
+  }
   const W = HEAD.Konten.length;
   const s = sheet_("Konten"), v = s.getDataRange().getValues().slice(1);
   const keep = v.filter(r => r[0] !== email).map(r => r.slice(0, W));
@@ -226,8 +234,43 @@ function save_(d) {
       tc.setValue(String(d.target || "").replace(/\D/g, "").substring(0, 12));
     }
   }
-  return { ok: true };
+  const nv = String(Number(cur) + 1);
+  const vc = cu.s.getRange(cu.row, 13);
+  vc.setNumberFormat("@");
+  vc.setValue(nv);
+  return { ok: true, version: nv };
 }
+// ===== BACKUP HARIAN =====
+// Jalankan pasangBackup SEKALI dari editor (Run). Google akan meminta izin Drive.
+// Setelah itu salinan spreadsheet dibuat otomatis tiap hari (sekitar jam 02.00) di folder
+// "Jadwalin Backup" di Google Drive-mu, dan salinan lebih dari 14 hari dihapus otomatis.
+// Sheet "Sesi" (token login) tidak ikut disalin. Untuk memulihkan: buka salinannya,
+// lalu copy isi sheet Konten / Pengeluaran / Users ke spreadsheet utama.
+function pasangBackup() {
+  ScriptApp.getProjectTriggers().forEach(function (t) {
+    if (t.getHandlerFunction() === "backupHarian") ScriptApp.deleteTrigger(t);
+  });
+  ScriptApp.newTrigger("backupHarian").timeBased().everyDays(1).atHour(2).create();
+  backupHarian();
+  Logger.log("Backup harian aktif. Cek folder 'Jadwalin Backup' di Google Drive.");
+}
+function backupHarian() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const it = DriveApp.getFoldersByName("Jadwalin Backup");
+  const folder = it.hasNext() ? it.next() : DriveApp.createFolder("Jadwalin Backup");
+  const nama = "Backup Jadwalin " + Utilities.formatDate(new Date(), "Asia/Jakarta", "yyyy-MM-dd");
+  if (folder.getFilesByName(nama).hasNext()) return; // hari ini sudah ada
+  const copy = ss.copy(nama);
+  const sesi = copy.getSheetByName("Sesi");
+  if (sesi && copy.getSheets().length > 1) copy.deleteSheet(sesi);
+  DriveApp.getFileById(copy.getId()).moveTo(folder);
+  const batas = Date.now() - 14 * 864e5, files = folder.getFiles();
+  while (files.hasNext()) {
+    const f = files.next();
+    if (f.getDateCreated().getTime() < batas) f.setTrashed(true);
+  }
+}
+
 function logout_(d) {
   const s = sheet_("Sesi"), v = s.getDataRange().getValues();
   for (let i = v.length - 1; i >= 1; i--) if (v[i][0] === d.token) s.deleteRow(i + 1);
