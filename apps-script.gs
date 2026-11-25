@@ -1,10 +1,11 @@
 // Jadwalin - server. Tempel di Google Sheets: Ekstensi > Apps Script. Lalu Deploy > Web app.
-// Sheet "Users", "Sesi", dan "Konten" dibuat/diperbarui otomatis saat pertama dipakai.
+// Sheet "Users", "Sesi", "Konten", "Pengeluaran", dan "Invoice" dibuat/diperbarui otomatis saat pertama dipakai.
 const HEAD = {
-  Users: ["email", "nama", "salt", "hash", "dibuat", "gagal", "kunci_sampai", "kode", "kode_sampai", "foto", "sosmed", "target", "versi"],
+  Users: ["email", "nama", "salt", "hash", "dibuat", "gagal", "kunci_sampai", "kode", "kode_sampai", "foto", "sosmed", "target", "versi", "bisnis", "ratecard"],
   Sesi: ["token", "email", "kedaluwarsa"],
   Konten: ["email", "id", "judul", "platform", "tahap", "deadline", "catatan", "sow", "kolab", "fee", "mulai", "kirim", "brand", "pic", "kontak", "bayar", "dibayar", "keranjang", "boost", "boost_hari", "link_produk", "link_brief", "deadline_mode", "deadline_hari", "tgl_sampai"],
-  Pengeluaran: ["email", "id", "tanggal", "nama", "jumlah"]
+  Pengeluaran: ["email", "id", "tanggal", "nama", "jumlah"],
+  Invoice: ["email", "id", "data"]
 };
 const ready_ = {};
 
@@ -121,11 +122,35 @@ function expenses_(email) {
   const v = sheet_("Pengeluaran").getDataRange().getValues().slice(1);
   return v.filter(r => r[0] === email).map(r => ({ id: r[1], date: r[2], name: r[3], amount: r[4] || "" }));
 }
+function parse_(s) { try { return JSON.parse(s || "{}") || {}; } catch (e) { return {}; } }
+function invoices_(email) {
+  return sheet_("Invoice").getDataRange().getValues().slice(1).filter(r => r[0] === email)
+    .map(r => { try { return JSON.parse(r[2]); } catch (e) { return null; } }).filter(Boolean);
+}
+const date_ = v => /^\d{4}-\d{2}-\d{2}$/.test(String(v || "")) ? v : "";
+const num_ = v => String(v || "").replace(/\D/g, "").substring(0, 12);
+function cleanInv_(x) {
+  return { id: c_(x.id, 40), no: s_(x.no, 30), date: date_(x.date), due: date_(x.due),
+    st: ["draft", "terkirim", "lunas"].indexOf(x.st) >= 0 ? x.st : "draft",
+    klien: s_(x.klien, 80), kontak: s_(x.kontak, 80), alamat: s_(x.alamat, 150), disc: num_(x.disc), dp: num_(x.dp), note: c_(x.note, 300), job: c_(x.job, 40),
+    items: (Array.isArray(x.items) ? x.items : []).slice(0, 20).map(i => ({ n: s_(i.n, 120), q: Math.min(9999, Number(i.q) || 1), h: num_(i.h) })) };
+}
+function cleanBiz_(x) {
+  x = x && typeof x === "object" ? x : {};
+  return { alamat: s_(x.alamat, 150), kontak: s_(x.kontak, 100), bank: s_(x.bank, 40), rek: s_(x.rek, 40), an: s_(x.an, 60), prefix: s_(x.prefix, 10), note: c_(x.note, 300) };
+}
+function cleanRc_(x) {
+  x = x && typeof x === "object" ? x : {};
+  const arr = (a, f, n) => (Array.isArray(a) ? a : []).slice(0, n).map(f);
+  return { bio: c_(x.bio, 400), niche: s_(x.niche, 80), kota: s_(x.kota, 60), kontak: s_(x.kontak, 100), aud: c_(x.aud, 400), brands: c_(x.brands, 300),
+    stats: arr(x.stats, i => ({ p: s_(i.p, 30), v: s_(i.v, 20), e: s_(i.e, 20) }), 10),
+    rates: arr(x.rates, i => ({ n: s_(i.n, 80), h: num_(i.h), d: s_(i.d, 100) }), 30) };
+}
 // Paket data yang dikirim ke web setelah masuk
 function pack_(email, v, token) {
   let links = {};
   try { links = JSON.parse(v[10] || "{}"); } catch (e) {}
-  return { ok: true, token: token, email: email, name: v[1], photo: String(v[9] || ""), links: links, tasks: tasks_(email), expenses: expenses_(email), target: String(v[11] || ""), version: String(v[12] || "0") };
+  return { ok: true, token: token, email: email, name: v[1], photo: String(v[9] || ""), links: links, tasks: tasks_(email), expenses: expenses_(email), target: String(v[11] || ""), version: String(v[12] || "0"), invoices: invoices_(email), biz: parse_(v[13]), rc: parse_(v[14]) };
 }
 
 function register_(d) {
@@ -136,7 +161,7 @@ function register_(d) {
   const name = c_(d.name, 60).trim() || email.split("@")[0];
   const salt = Utilities.getUuid();
   sheet_("Users").appendRow([email, name, salt, hash_(pw, salt), new Date().toISOString(), "0", "0"]);
-  return { ok: true, token: newSession_(email), email: email, name: name, photo: "", links: {}, tasks: [], expenses: [], target: "", version: "0" };
+  return { ok: true, token: newSession_(email), email: email, name: name, photo: "", links: {}, tasks: [], expenses: [], target: "", version: "0", invoices: [], biz: {}, rc: {} };
 }
 function login_(d) {
   const email = norm_(d.email), u = findUser_(email);
@@ -168,7 +193,7 @@ function save_(d) {
   const cur = String(cu.v[12] || "0");
   if (d.version !== undefined && d.version !== null && String(d.version) !== cur) {
     return { ok: false, conflict: true, version: cur, error: "Data sudah berubah di perangkat lain",
-      latest: { tasks: tasks_(email), expenses: expenses_(email), target: String(cu.v[11] || ""), version: cur } };
+      latest: { tasks: tasks_(email), expenses: expenses_(email), target: String(cu.v[11] || ""), version: cur, invoices: invoices_(email), biz: parse_(cu.v[13]), rc: parse_(cu.v[14]) } };
   }
   const W = HEAD.Konten.length;
   const s = sheet_("Konten"), v = s.getDataRange().getValues().slice(1);
@@ -232,6 +257,32 @@ function save_(d) {
       const tc = u.s.getRange(u.row, 12);
       tc.setNumberFormat("@");
       tc.setValue(String(d.target || "").replace(/\D/g, "").substring(0, 12));
+    }
+  }
+  // Invoice: hanya diganti kalau web mengirimnya
+  if (Array.isArray(d.invoices)) {
+    const is = sheet_("Invoice"), IW = HEAD.Invoice.length;
+    const ikeep = is.getDataRange().getValues().slice(1).filter(r => r[0] !== email).map(r => r.slice(0, IW));
+    const iadd = d.invoices.slice(0, 300).map(cleanInv_).map(v => [email, v.id, JSON.stringify(v)]);
+    const iall = ikeep.concat(iadd);
+    if (is.getMaxRows() > 1) is.getRange(2, 1, is.getMaxRows() - 1, IW).clearContent();
+    if (iall.length) {
+      if (is.getMaxRows() < iall.length + 1) is.insertRowsAfter(is.getMaxRows(), iall.length + 1 - is.getMaxRows());
+      const ir = is.getRange(2, 1, iall.length, IW);
+      ir.setNumberFormat("@");
+      ir.setValues(iall);
+    }
+  }
+  // Data pengirim invoice (bisnis) dan rate card / media kit, disimpan sebagai JSON di tab Users
+  if (d.biz !== undefined || d.rc !== undefined) {
+    const u2 = findUser_(email);
+    if (u2) {
+      const rg = u2.s.getRange(u2.row, 14, 1, 2);
+      rg.setNumberFormat("@");
+      rg.setValues([[
+        d.biz !== undefined ? JSON.stringify(cleanBiz_(d.biz)) : String(u2.v[13] || ""),
+        d.rc !== undefined ? JSON.stringify(cleanRc_(d.rc)) : String(u2.v[14] || "")
+      ]]);
     }
   }
   const nv = String(Number(cur) + 1);
