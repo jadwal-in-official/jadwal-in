@@ -18,7 +18,7 @@ Setiap kali `apps-script.gs` diubah, buat versi deployment baru (langkah 4), kal
 Sheet lama tidak perlu diubah manual: tab dan kolom baru (tab Pengeluaran, kolom target, foto, sosmed, kolab, fee, mulai, kirim, brand, pic, kontak, bayar, dibayar, keranjang, boost) ditambahkan otomatis saat pertama dipakai.
 
 ## 2. Hosting di Vercel
-1. Taruh `index.html` dan semua file logo (daftar di atas) dalam **satu folder yang sama** (misalnya `jadwalin/`). `apps-script.gs` dan `PANDUAN.md` tidak perlu ikut.
+1. Siapkan folder berisi `index.html` dan semua file logo (daftar di atas) dalam **satu folder yang sama** (misalnya `jadwalin/`). `apps-script.gs` dan `PANDUAN.md` tidak perlu ikut.
 2. Cara paling mudah: buat repo GitHub berisi file itu, lalu di vercel.com pilih **Add New > Project**, impor repo, **Framework Preset: Other**, kosongkan Build Command, lalu **Deploy**.
 3. Alternatif tanpa GitHub: install Vercel CLI (`npm i -g vercel`), masuk ke folder tadi, jalankan `vercel --prod`.
 4. Setiap kali `index.html` berubah, push ke GitHub (atau jalankan `vercel --prod` lagi) dan Vercel akan memperbarui situsnya.
@@ -38,10 +38,16 @@ Tidak perlu pengaturan CORS atau environment variable: web memanggil Apps Script
 - **Info brand dan PIC**: isi nama brand, nama PIC, dan kontak PIC untuk konten kerja sama (paid atau barter). Kontak berupa nomor WA atau email otomatis menjadi tautan.
 - **TikTok**: kalau platform TikTok dipilih, muncul isian **Keranjang kuning** (tanpa, belum dipasang, sudah dipasang) dan **Boost code**. Boost code di kartu punya tombol **Salin**.
 - **Pendapatan**: menu baru di sidebar. Menampilkan total fee, yang sudah masuk, dan yang belum masuk per bulan (menurut bulan deadline), plus total yang belum masuk dari semua bulan. Status pembayaran bisa diubah langsung dari daftar.
+- **Tema**: di halaman Profil, bagian **Tampilan**, pilih 5 tema (Ungu Pastel, Mint Segar, Sakura, Peach Sunset, Matcha) dan mode Otomatis, Terang, atau Gelap. Tiap tema punya motif latar, hiasan di kartu Beranda, dan aksesori maskot sendiri. Pilihan tersimpan di perangkat (bukan di akun).
 - **Tampilan HP**: kolom papan tersusun ke bawah dan bisa dilipat dengan mengetuk judul kolom; form tersusun satu kolom.
 - **Profil**: foto profil (otomatis dikecilkan), nama, dan tautan TikTok, Instagram, Threads, YouTube, X, serta website. Boleh isi `@username` atau link lengkap.
 - **Ganti kata sandi**: di halaman Profil, wajib mengisi kata sandi lama. Perangkat lain otomatis keluar.
 - CSV ekspor/impor sekarang punya kolom **Mulai**, **Kerja sama**, **Fee**, dan **Status kirim**. CSV lama tanpa kolom itu tetap bisa diimpor.
+
+- **Cari & filter** (halaman Jadwal): kolom cari (judul, brand, PIC, catatan, SOW), filter kerja sama, status pembayaran, dan deadline (terlambat, hari ini, 7 hari ke depan, bulan ini), plus tombol Reset. Halaman Pendapatan juga punya kolom cari. Semua berjalan di browser, tidak perlu deploy ulang.
+- **Invoice**: menu baru. Buat invoice dari nol atau dari job paid collab (tombol *Invoice* di halaman Pendapatan; klien, rincian, dan DP terisi otomatis). Ada diskon, DP, status (Draft, Terkirim, Lunas), dan nomor otomatis (awalan bisa diubah). Isi *Data pengirim & rekening* sekali. Tombol *Lihat / cetak* membuka pratinjau: **Cetak / simpan PDF** (pilih "Save as PDF" di jendela cetak) atau **Kirim lewat WA** (pesan tagihan sudah terisi).
+- **Rate card & media kit**: menu baru. Isi bio, niche, statistik akun, audiens, daftar harga layanan, dan brand yang pernah kerja sama. Foto, nama, dan sosmed diambil dari Profil. Pratinjau tampil langsung; kirim sebagai PDF atau **Salin teks** untuk WhatsApp.
+- Invoice, data pengirim, dan media kit tersimpan di Sheet (tab **Invoice** dan kolom **bisnis**, **ratecard** di tab Users, dibuat otomatis). **Wajib buat versi deployment baru** setelah mengganti `apps-script.gs`; sebelum itu fitur ini hanya tersimpan di browser.
 
 ## Lupa kata sandi
 - Di layar masuk ada tombol **Lupa kata sandi?**. Pengguna memasukkan email, menerima **kode 6 angka** (berlaku 15 menit), lalu membuat kata sandi baru.
