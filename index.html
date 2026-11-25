@@ -143,8 +143,8 @@ textarea{resize:vertical;min-height:44px}
 .col>summary{list-style:none}.col>summary::-webkit-details-marker{display:none}
 .col h3{font-size:18px;padding:4px 6px 10px;display:flex;justify-content:space-between;align-items:center}
 .col h3 em{font-style:normal;background:rgba(255,255,255,.55);border-radius:999px;padding:0 10px;font-size:14px}
-.c-menunggu{background:#CFE7FF}.c-ide{background:var(--yellow)}.c-produksi{background:var(--orange)}.c-editing{background:var(--pink)}.c-siap{background:var(--violet)}.c-selesai{background:var(--teal)}
-.c-menunggu,.c-ide,.c-produksi,.c-selesai,.c-editing,.c-siap{color:var(--on-color)}
+.c-menunggu{background:#CFE7FF}.c-ide{background:var(--yellow)}.c-editing{background:var(--pink)}.c-drafting{background:var(--orange)}.c-revisi{background:#D9EFA6}.c-siap{background:var(--violet)}.c-selesai{background:var(--teal)}
+.c-menunggu,.c-ide,.c-drafting,.c-revisi,.c-selesai,.c-editing,.c-siap{color:var(--on-color)}
 .card{background:var(--surface);color:var(--ink);border-radius:14px;padding:12px;margin-bottom:10px;box-shadow:0 2px 6px rgba(43,40,80,.08)}
 .card h4{font:800 16px/1.25 'Bricolage Grotesque',sans-serif;margin:0 0 6px}
 .card p{margin:6px 0;color:var(--muted);font-size:13px;overflow-wrap:anywhere}
@@ -271,7 +271,19 @@ dialog .btns{margin-top:14px;justify-content:flex-end}
   .board{grid-auto-flow:row;grid-auto-columns:auto;grid-template-columns:minmax(0,1fr);overflow:visible;gap:10px}
   .col{min-height:0}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* layar memeriksa akun */
+.boot{min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.boot .logo{margin:0}
+.boot .logo .a{animation:bootA 1.2s ease-in-out infinite}
+.boot .logo .b{animation:bootB 1.2s ease-in-out .18s infinite}
+@keyframes bootA{0%,100%{transform:rotate(-3deg) translateY(0)}50%{transform:rotate(-6deg) translateY(-10px)}}
+@keyframes bootB{0%,100%{transform:rotate(2deg) translateY(0)}50%{transform:rotate(5deg) translateY(-10px)}}
+.bootdots{display:flex;gap:8px}
+.bootdots i{width:10px;height:10px;border-radius:50%;background:var(--accent);animation:bootD 1s ease-in-out infinite}
+.bootdots i:nth-child(2){background:var(--pink);animation-delay:.15s}
+.bootdots i:nth-child(3){background:var(--yellow);animation-delay:.3s}
+@keyframes bootD{0%,80%,100%{transform:scale(.6);opacity:.5}40%{transform:scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.boot .logo span,.bootdots i{animation:none!important}}
 </style>
 </head>
 <body>
@@ -315,7 +327,11 @@ dialog .btns{margin-top:14px;justify-content:flex-end}
       <h1 class="logo"><span class="a">Jadwal</span><span class="b">in</span></h1>
     </div>
     <div class="wrap">
-      <p id="boot" class="sub">Memeriksa akun…</p>
+      <div id="boot" class="boot" role="status" aria-live="polite">
+        <div class="logo big" aria-hidden="true"><span class="a">Jadwal</span><span class="b">in</span></div>
+        <div class="bootdots" aria-hidden="true"><i></i><i></i><i></i></div>
+        <p class="sub">Memeriksa akun…</p>
+      </div>
 
       <section id="auth" class="authbox hide">
         <h1 class="logo big"><span class="a">Jadwal</span><span class="b">in</span></h1>
@@ -529,11 +545,13 @@ dialog .btns{margin-top:14px;justify-content:flex-end}
 </nav>
 
 <script>
-const STAGES=[["ide","Ide"],["produksi","Produksi"],["editing","Editing"],["siap","Siap upload"],["selesai","Selesai"]];
+const STAGES=[["ide","Ide"],["editing","Editing"],["drafting","Drafting"],["revisi","Revisi"],["siap","Siap upload"],["selesai","Selesai"]];
+const TAHAP_LAMA={produksi:"drafting"}; // tahap lama otomatis dipindah
 const PCOL={TikTok:"#12C4AE",YouTube:"#FF7A3D","Instagram Carousel":"#FF4D8D","Instagram Story":"#FF9BC2","Instagram Reels":"#FFC82C",Shopee:"#FF6B4A",Threads:"#7DD3FC",Blog:"#9BE15D",Lainnya:"#D9D6EE"};
 // Nama platform lama otomatis dipindah ke nama baru (Shorts sudah termasuk YouTube)
 const PLAT_LAMA={"Instagram":"Instagram Carousel","Reels":"Instagram Reels","Shorts":"YouTube"};
-function migrasi(){let n=0;tasks.forEach(t=>{const p=PLAT_LAMA[t.platform];if(p){t.platform=p;n++}});return n}
+function migrasi(){let n=0;tasks.forEach(t=>{const p=PLAT_LAMA[t.platform];if(p){t.platform=p;n++}
+  const st=TAHAP_LAMA[t.stage]||t.stage,ok=STAGES.some(x=>x[0]===st);if((ok?st:"ide")!==t.stage){t.stage=ok?st:"ide";n++}});return n}
 const isIgFeed=p=>p==="Instagram Carousel"||p==="Instagram Reels";
 const SOC=[
   ["tiktok","TikTok","https://www.tiktok.com/@","@username"],
@@ -560,7 +578,7 @@ function load(){
   try{const r=localStorage.getItem(KEY);if(r){tasks=JSON.parse(r);migrasi();return}}catch(e){}
   tasks=[
     {id:uid(),title:"Video unboxing paket endorse",platform:"YouTube",stage:"editing",due:addDays(1),start:addDays(-4),note:"Tambahkan intro 5 detik",kolab:"paid",fee:"2500000",bayar:"dp",dibayar:"1000000",brand:"Contoh Brand",pic:"Rani",kontak:"081234567890",sow:"- 1 video 60 detik, format 16:9\n- Sebut 3 keunggulan produk\n- 2x revisi\n- Tayang setelah approval klien"},
-    {id:uid(),title:"Reels GRWM weekend",platform:"Instagram Reels",stage:"produksi",due:addDays(0),note:"Produk dari brand lokal",kolab:"barter",fee:"",kirim:"jalan"},
+    {id:uid(),title:"Reels GRWM weekend",platform:"Instagram Reels",stage:"drafting",due:addDays(0),note:"Produk dari brand lokal",kolab:"barter",fee:"",kirim:"jalan"},
     {id:uid(),title:"Carousel tips caption",platform:"Instagram Carousel",stage:"ide",due:addDays(5),note:"Cari 5 contoh",kolab:"",fee:""},
     {id:uid(),title:"TikTok tren audio baru",platform:"TikTok",stage:"siap",due:addDays(-1),note:"Jadwalkan jam 19.00",kolab:"",fee:"",keranjang:"ya",boostDays:"7",boost:"",linkBrief:"https://example.com/brief"},
     {id:uid(),title:"Review produk skincare",platform:"Blog",stage:"selesai",due:addDays(-3),note:"",kolab:"",fee:""}
