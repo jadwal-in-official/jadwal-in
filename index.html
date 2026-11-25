@@ -27,6 +27,7 @@
 <meta name="twitter:image" content="https://jadwal-in-konten.vercel.app/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<script>try{var k="jadwal-konten-v1",p=localStorage.getItem(k+":palette"),m=localStorage.getItem(k+":mode");if(p)document.documentElement.dataset.palette=p;if(m)document.documentElement.dataset.theme=m}catch(e){}</script>
 <style>
 :root{
   --bg:#F8F6FF;--surface:#FFFFFF;--ink:#2B2850;--muted:#74718F;--line:#ECE8FA;
@@ -271,6 +272,40 @@ dialog .btns{margin-top:14px;justify-content:flex-end}
   .board{grid-auto-flow:row;grid-auto-columns:auto;grid-template-columns:minmax(0,1fr);overflow:visible;gap:10px}
   .col{min-height:0}
 }
+/* tema dan gambar */
+:root{--pat-ungu:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20160%20160%22%20width%3D%22160%22%20height%3D%22160%22%3E%3Cpath%20d%3D%22M30.0%2023.0%20L33.1%2030.9%20L41.0%2034.0%20L33.1%2037.1%20L30.0%2045.0%20L26.9%2037.1%20L19.0%2034.0%20L26.9%2030.9Z%22%2F%3E%3Cpath%20d%3D%22M112.0%2057.0%20L114.0%2062.0%20L119.0%2064.0%20L114.0%2066.0%20L112.0%2071.0%20L110.0%2066.0%20L105.0%2064.0%20L110.0%2062.0Z%22%2F%3E%3Cpath%20d%3D%22M64.0%20116.0%20L66.2%20121.8%20L72.0%20124.0%20L66.2%20126.2%20L64.0%20132.0%20L61.8%20126.2%20L56.0%20124.0%20L61.8%20121.8Z%22%2F%3E%3Ccircle%20cx%3D%2292%22%20cy%3D%2222%22%20r%3D%222.2%22%2F%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%22100%22%20r%3D%222.2%22%2F%3E%3Ccircle%20cx%3D%22136%22%20cy%3D%22126%22%20r%3D%222.2%22%2F%3E%3Ccircle%20cx%3D%22138%22%20cy%3D%2220%22%20r%3D%221.8%22%2F%3E%3C%2Fsvg%3E");--dec-ungu:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20220%20220%22%20width%3D%22220%22%20height%3D%22220%22%3E%3Cpath%20d%3D%22M140.0%2088.0%20L154.6%20125.4%20L192.0%20140.0%20L154.6%20154.6%20L140.0%20192.0%20L125.4%20154.6%20L88.0%20140.0%20L125.4%20125.4Z%22%2F%3E%3Cpath%20d%3D%22M64.0%20159.0%20L68.8%20171.2%20L81.0%20176.0%20L68.8%20180.8%20L64.0%20193.0%20L59.2%20180.8%20L47.0%20176.0%20L59.2%20171.2Z%22%2F%3E%3Cpath%20d%3D%22M184.0%2038.0%20L187.9%2048.1%20L198.0%2052.0%20L187.9%2055.9%20L184.0%2066.0%20L180.1%2055.9%20L170.0%2052.0%20L180.1%2048.1Z%22%2F%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%2260%22%20r%3D%223%22%2F%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%22120%22%20r%3D%223%22%2F%3E%3Ccircle%20cx%3D%22190%22%20cy%3D%22190%22%20r%3D%223%22%2F%3E%3C%2Fsvg%3E");--pat-mint:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20160%20160%22%20width%3D%22160%22%20height%3D%22160%22%3E%3Cpath%20transform%3D%22translate%2814%2042%29%20rotate%28-30%29%20scale%281%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%28100%2062%29%20rotate%2840%29%20scale%280.8%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%2840%20128%29%20rotate%2810%29%20scale%280.9%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Ccircle%20cx%3D%22132%22%20cy%3D%22132%22%20r%3D%222.5%22%2F%3E%3Ccircle%20cx%3D%2280%22%20cy%3D%2216%22%20r%3D%222.5%22%2F%3E%3Ccircle%20cx%3D%22140%22%20cy%3D%2218%22%20r%3D%222%22%2F%3E%3C%2Fsvg%3E");--dec-mint:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20220%20220%22%20width%3D%22220%22%20height%3D%22220%22%3E%3Cpath%20d%3D%22M16%20204C58%20150%20112%20112%20196%2040%22%20stroke%3D%22%23000%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22%2F%3E%3Cpath%20transform%3D%22translate%2848%20160%29%20rotate%28-70%29%20scale%281.1%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%2870%20138%29%20rotate%28-20%29%20scale%281%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%2896%20120%29%20rotate%28-80%29%20scale%281.1%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%28126%2092%29%20rotate%28-25%29%20scale%281%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%28156%2070%29%20rotate%28-85%29%20scale%281%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%28180%2052%29%20rotate%28-35%29%20scale%280.9%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3C%2Fsvg%3E");--pat-sakura:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20160%20160%22%20width%3D%22160%22%20height%3D%22160%22%3E%3Ccircle%20cx%3D%2236.0%22%20cy%3D%2231.8%22%20r%3D%225.0%22%2F%3E%3Ccircle%20cx%3D%2241.9%22%20cy%3D%2236.1%22%20r%3D%225.0%22%2F%3E%3Ccircle%20cx%3D%2239.6%22%20cy%3D%2243.0%22%20r%3D%225.0%22%2F%3E%3Ccircle%20cx%3D%2232.4%22%20cy%3D%2243.0%22%20r%3D%225.0%22%2F%3E%3Ccircle%20cx%3D%2230.1%22%20cy%3D%2236.1%22%20r%3D%225.0%22%2F%3E%3Ccircle%20cx%3D%2236%22%20cy%3D%2238%22%20r%3D%223.0%22%2F%3E%3Ccircle%20cx%3D%22112.0%22%20cy%3D%2261.7%22%20r%3D%223.5%22%2F%3E%3Ccircle%20cx%3D%22116.1%22%20cy%3D%2264.7%22%20r%3D%223.5%22%2F%3E%3Ccircle%20cx%3D%22114.6%22%20cy%3D%2269.5%22%20r%3D%223.5%22%2F%3E%3Ccircle%20cx%3D%22109.4%22%20cy%3D%2269.5%22%20r%3D%223.5%22%2F%3E%3Ccircle%20cx%3D%22107.9%22%20cy%3D%2264.7%22%20r%3D%223.5%22%2F%3E%3Ccircle%20cx%3D%22112%22%20cy%3D%2266%22%20r%3D%222.1%22%2F%3E%3Ccircle%20cx%3D%2262.0%22%20cy%3D%22119.0%22%20r%3D%224.0%22%2F%3E%3Ccircle%20cx%3D%2266.7%22%20cy%3D%22122.5%22%20r%3D%224.0%22%2F%3E%3Ccircle%20cx%3D%2264.9%22%20cy%3D%22128.0%22%20r%3D%224.0%22%2F%3E%3Ccircle%20cx%3D%2259.1%22%20cy%3D%22128.0%22%20r%3D%224.0%22%2F%3E%3Ccircle%20cx%3D%2257.3%22%20cy%3D%22122.5%22%20r%3D%224.0%22%2F%3E%3Ccircle%20cx%3D%2262%22%20cy%3D%22124%22%20r%3D%222.4%22%2F%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%2218%22%20r%3D%222%22%2F%3E%3Ccircle%20cx%3D%2218%22%20cy%3D%22100%22%20r%3D%222%22%2F%3E%3Ccircle%20cx%3D%22138%22%20cy%3D%22130%22%20r%3D%222%22%2F%3E%3C%2Fsvg%3E");--dec-sakura:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20220%20220%22%20width%3D%22220%22%20height%3D%22220%22%3E%3Cpath%20d%3D%22M10%20196C60%20154%20122%20122%20204%2058%22%20stroke%3D%22%23000%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22%2F%3E%3Ccircle%20cx%3D%2270.0%22%20cy%3D%22139.6%22%20r%3D%2210.0%22%2F%3E%3Ccircle%20cx%3D%2281.8%22%20cy%3D%22148.2%22%20r%3D%2210.0%22%2F%3E%3Ccircle%20cx%3D%2277.3%22%20cy%3D%22162.0%22%20r%3D%2210.0%22%2F%3E%3Ccircle%20cx%3D%2262.7%22%20cy%3D%22162.0%22%20r%3D%2210.0%22%2F%3E%3Ccircle%20cx%3D%2258.2%22%20cy%3D%22148.2%22%20r%3D%2210.0%22%2F%3E%3Ccircle%20cx%3D%2270%22%20cy%3D%22152%22%20r%3D%226.0%22%2F%3E%3Ccircle%20cx%3D%22132.0%22%20cy%3D%2291.1%22%20r%3D%2212.0%22%2F%3E%3Ccircle%20cx%3D%22146.2%22%20cy%3D%22101.4%22%20r%3D%2212.0%22%2F%3E%3Ccircle%20cx%3D%22140.7%22%20cy%3D%22118.0%22%20r%3D%2212.0%22%2F%3E%3Ccircle%20cx%3D%22123.3%22%20cy%3D%22118.0%22%20r%3D%2212.0%22%2F%3E%3Ccircle%20cx%3D%22117.8%22%20cy%3D%22101.4%22%20r%3D%2212.0%22%2F%3E%3Ccircle%20cx%3D%22132%22%20cy%3D%22106%22%20r%3D%227.2%22%2F%3E%3Ccircle%20cx%3D%22186.0%22%20cy%3D%2260.7%22%20r%3D%227.5%22%2F%3E%3Ccircle%20cx%3D%22194.8%22%20cy%3D%2267.1%22%20r%3D%227.5%22%2F%3E%3Ccircle%20cx%3D%22191.5%22%20cy%3D%2277.5%22%20r%3D%227.5%22%2F%3E%3Ccircle%20cx%3D%22180.5%22%20cy%3D%2277.5%22%20r%3D%227.5%22%2F%3E%3Ccircle%20cx%3D%22177.2%22%20cy%3D%2267.1%22%20r%3D%227.5%22%2F%3E%3Ccircle%20cx%3D%22186%22%20cy%3D%2270%22%20r%3D%224.5%22%2F%3E%3Ccircle%20cx%3D%2234.0%22%20cy%3D%22171.2%22%20r%3D%225.5%22%2F%3E%3Ccircle%20cx%3D%2240.5%22%20cy%3D%22175.9%22%20r%3D%225.5%22%2F%3E%3Ccircle%20cx%3D%2238.0%22%20cy%3D%22183.5%22%20r%3D%225.5%22%2F%3E%3Ccircle%20cx%3D%2230.0%22%20cy%3D%22183.5%22%20r%3D%225.5%22%2F%3E%3Ccircle%20cx%3D%2227.5%22%20cy%3D%22175.9%22%20r%3D%225.5%22%2F%3E%3Ccircle%20cx%3D%2234%22%20cy%3D%22178%22%20r%3D%223.3%22%2F%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%2260%22%20r%3D%223%22%2F%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%22110%22%20r%3D%223%22%2F%3E%3C%2Fsvg%3E");--pat-peach:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20160%20160%22%20width%3D%22160%22%20height%3D%22160%22%3E%3Ccircle%20cx%3D%2238%22%20cy%3D%2240%22%20r%3D%227%22%2F%3E%3Cline%20x1%3D%2248.1%22%20y1%3D%2240.0%22%20x2%3D%2254.5%22%20y2%3D%2240.0%22%20stroke%3D%22%23000%22%20stroke-width%3D%222.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%2245.2%22%20y1%3D%2247.2%22%20x2%3D%2249.6%22%20y2%3D%2251.6%22%20stroke%3D%22%23000%22%20stroke-width%3D%222.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%2238.0%22%20y1%3D%2250.1%22%20x2%3D%2238.0%22%20y2%3D%2256.5%22%20stroke%3D%22%23000%22%20stroke-width%3D%222.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%2230.8%22%20y1%3D%2247.2%22%20x2%3D%2226.4%22%20y2%3D%2251.6%22%20stroke%3D%22%23000%22%20stroke-width%3D%222.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%2227.9%22%20y1%3D%2240.0%22%20x2%3D%2221.6%22%20y2%3D%2240.0%22%20stroke%3D%22%23000%22%20stroke-width%3D%222.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%2230.8%22%20y1%3D%2232.8%22%20x2%3D%2226.4%22%20y2%3D%2228.4%22%20stroke%3D%22%23000%22%20stroke-width%3D%222.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%2238.0%22%20y1%3D%2229.9%22%20x2%3D%2238.0%22%20y2%3D%2223.6%22%20stroke%3D%22%23000%22%20stroke-width%3D%222.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%2245.2%22%20y1%3D%2232.8%22%20x2%3D%2249.6%22%20y2%3D%2228.4%22%20stroke%3D%22%23000%22%20stroke-width%3D%222.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%22114%22%20cy%3D%22102%22%20r%3D%225%22%2F%3E%3Cline%20x1%3D%22121.2%22%20y1%3D%22102.0%22%20x2%3D%22125.8%22%20y2%3D%22102.0%22%20stroke%3D%22%23000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22119.1%22%20y1%3D%22107.1%22%20x2%3D%22122.3%22%20y2%3D%22110.3%22%20stroke%3D%22%23000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22114.0%22%20y1%3D%22109.2%22%20x2%3D%22114.0%22%20y2%3D%22113.8%22%20stroke%3D%22%23000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22108.9%22%20y1%3D%22107.1%22%20x2%3D%22105.7%22%20y2%3D%22110.3%22%20stroke%3D%22%23000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22106.8%22%20y1%3D%22102.0%22%20x2%3D%22102.2%22%20y2%3D%22102.0%22%20stroke%3D%22%23000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22108.9%22%20y1%3D%2296.9%22%20x2%3D%22105.7%22%20y2%3D%2293.7%22%20stroke%3D%22%23000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22114.0%22%20y1%3D%2294.8%22%20x2%3D%22114.0%22%20y2%3D%2290.2%22%20stroke%3D%22%23000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22119.1%22%20y1%3D%2296.9%22%20x2%3D%22122.3%22%20y2%3D%2293.7%22%20stroke%3D%22%23000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2284%22%20cy%3D%2220%22%20r%3D%222.5%22%2F%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%22112%22%20r%3D%222.5%22%2F%3E%3Ccircle%20cx%3D%22136%22%20cy%3D%2234%22%20r%3D%222.5%22%2F%3E%3Ccircle%20cx%3D%2270%22%20cy%3D%22140%22%20r%3D%222%22%2F%3E%3C%2Fsvg%3E");--dec-peach:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20220%20220%22%20width%3D%22220%22%20height%3D%22220%22%3E%3Ccircle%20cx%3D%22150%22%20cy%3D%22150%22%20r%3D%2228%22%2F%3E%3Cline%20x1%3D%22190.6%22%20y1%3D%22150.0%22%20x2%3D%22212.6%22%20y2%3D%22150.0%22%20stroke%3D%22%23000%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22185.2%22%20y1%3D%22170.3%22%20x2%3D%22204.2%22%20y2%3D%22181.3%22%20stroke%3D%22%23000%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22170.3%22%20y1%3D%22185.2%22%20x2%3D%22181.3%22%20y2%3D%22204.2%22%20stroke%3D%22%23000%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22150.0%22%20y1%3D%22190.6%22%20x2%3D%22150.0%22%20y2%3D%22212.6%22%20stroke%3D%22%23000%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22129.7%22%20y1%3D%22185.2%22%20x2%3D%22118.7%22%20y2%3D%22204.2%22%20stroke%3D%22%23000%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22114.8%22%20y1%3D%22170.3%22%20x2%3D%2295.8%22%20y2%3D%22181.3%22%20stroke%3D%22%23000%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22109.4%22%20y1%3D%22150.0%22%20x2%3D%2287.4%22%20y2%3D%22150.0%22%20stroke%3D%22%23000%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22114.8%22%20y1%3D%22129.7%22%20x2%3D%2295.8%22%20y2%3D%22118.7%22%20stroke%3D%22%23000%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22129.7%22%20y1%3D%22114.8%22%20x2%3D%22118.7%22%20y2%3D%2295.8%22%20stroke%3D%22%23000%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22150.0%22%20y1%3D%22109.4%22%20x2%3D%22150.0%22%20y2%3D%2287.4%22%20stroke%3D%22%23000%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22170.3%22%20y1%3D%22114.8%22%20x2%3D%22181.3%22%20y2%3D%2295.8%22%20stroke%3D%22%23000%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22185.2%22%20y1%3D%22129.7%22%20x2%3D%22204.2%22%20y2%3D%22118.7%22%20stroke%3D%22%23000%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M0%20206q16-14%2032%200t32%200t32%200t32%200t32%200t32%200%22%20stroke%3D%22%23000%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22%2F%3E%3Ccircle%20cx%3D%2240%22%20cy%3D%2260%22%20r%3D%224%22%2F%3E%3Ccircle%20cx%3D%2280%22%20cy%3D%2230%22%20r%3D%223%22%2F%3E%3C%2Fsvg%3E");--pat-matcha:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20160%20160%22%20width%3D%22160%22%20height%3D%22160%22%3E%3Cg%20transform%3D%22translate%2834%2070%29%20rotate%28-20%29%20scale%281%29%22%3E%3Cpath%20d%3D%22M0%200L0-34%22%20stroke%3D%22%23000%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22%2F%3E%3Cpath%20transform%3D%22translate%280%20-8%29%20rotate%28-50%29%20scale%280.45%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%280%20-8%29%20rotate%28-130%29%20scale%280.45%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%280%20-20%29%20rotate%28-50%29%20scale%280.4%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%280%20-20%29%20rotate%28-130%29%20scale%280.4%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%280%20-33%29%20rotate%28-90%29%20scale%280.4%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28112%20138%29%20rotate%2825%29%20scale%280.9%29%22%3E%3Cpath%20d%3D%22M0%200L0-34%22%20stroke%3D%22%23000%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22%2F%3E%3Cpath%20transform%3D%22translate%280%20-8%29%20rotate%28-50%29%20scale%280.45%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%280%20-8%29%20rotate%28-130%29%20scale%280.45%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%280%20-20%29%20rotate%28-50%29%20scale%280.4%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%280%20-20%29%20rotate%28-130%29%20scale%280.4%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%280%20-33%29%20rotate%28-90%29%20scale%280.4%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3C%2Fg%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%2234%22%20r%3D%222.5%22%2F%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%22128%22%20r%3D%222.5%22%2F%3E%3Ccircle%20cx%3D%22140%22%20cy%3D%2270%22%20r%3D%222%22%2F%3E%3C%2Fsvg%3E");--dec-matcha:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20220%20220%22%20width%3D%22220%22%20height%3D%22220%22%3E%3Cg%20transform%3D%22translate%2870%20200%29%20rotate%2818%29%20scale%282.4%29%22%3E%3Cpath%20d%3D%22M0%200L0-34%22%20stroke%3D%22%23000%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22%2F%3E%3Cpath%20transform%3D%22translate%280%20-8%29%20rotate%28-50%29%20scale%280.45%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%280%20-8%29%20rotate%28-130%29%20scale%280.45%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%280%20-20%29%20rotate%28-50%29%20scale%280.4%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%280%20-20%29%20rotate%28-130%29%20scale%280.4%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%280%20-33%29%20rotate%28-90%29%20scale%280.4%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28150%20200%29%20rotate%28-22%29%20scale%282%29%22%3E%3Cpath%20d%3D%22M0%200L0-34%22%20stroke%3D%22%23000%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22%2F%3E%3Cpath%20transform%3D%22translate%280%20-8%29%20rotate%28-50%29%20scale%280.45%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%280%20-8%29%20rotate%28-130%29%20scale%280.45%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%280%20-20%29%20rotate%28-50%29%20scale%280.4%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%280%20-20%29%20rotate%28-130%29%20scale%280.4%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3Cpath%20transform%3D%22translate%280%20-33%29%20rotate%28-90%29%20scale%280.4%29%22%20d%3D%22M0%200C8-12%2026-12%2034%200C26%2012%208%2012%200%200Z%22%2F%3E%3C%2Fg%3E%3Ccircle%20cx%3D%2236%22%20cy%3D%2270%22%20r%3D%224%22%2F%3E%3Ccircle%20cx%3D%22110%22%20cy%3D%2240%22%20r%3D%223%22%2F%3E%3Ccircle%20cx%3D%22190%22%20cy%3D%22100%22%20r%3D%223%22%2F%3E%3C%2Fsvg%3E");--pattern:var(--pat-ungu);--deco:var(--dec-ungu)}
+:root[data-palette="mint"]{--bg:#F1FBF7;--surface:#FFFFFF;--ink:#143B35;--muted:#4F746C;--line:#D4EFE5;--accent:#17806E;--pink:#F8BFD0;--yellow:#FFE9A6;--teal:#A8E6D8;--violet:#B8DFF5;--orange:#FFCFA3;--pattern:var(--pat-mint);--deco:var(--dec-mint)}
+@media (prefers-color-scheme:dark){:root[data-palette="mint"]:not([data-theme="light"]){--bg:#0F1F1C;--surface:#16302B;--ink:#E6FAF4;--muted:#93BDB2;--line:#24473F;--accent:#6FE0C5}}
+:root[data-palette="mint"][data-theme="dark"]{--bg:#0F1F1C;--surface:#16302B;--ink:#E6FAF4;--muted:#93BDB2;--line:#24473F;--accent:#6FE0C5}
+:root[data-palette="sakura"]{--bg:#FFF5F8;--surface:#FFFFFF;--ink:#4A2236;--muted:#8C5F73;--line:#F9DCE6;--accent:#C72F69;--pink:#F7A8C4;--yellow:#FFE3A0;--teal:#A8E6D8;--violet:#D8C6F7;--orange:#FFC6A0;--pattern:var(--pat-sakura);--deco:var(--dec-sakura)}
+@media (prefers-color-scheme:dark){:root[data-palette="sakura"]:not([data-theme="light"]){--bg:#24121B;--surface:#321A28;--ink:#FFEFF5;--muted:#D9A6BC;--line:#502A3E;--accent:#FF8FB8}}
+:root[data-palette="sakura"][data-theme="dark"]{--bg:#24121B;--surface:#321A28;--ink:#FFEFF5;--muted:#D9A6BC;--line:#502A3E;--accent:#FF8FB8}
+:root[data-palette="peach"]{--bg:#FFF8F2;--surface:#FFFFFF;--ink:#4A2B1B;--muted:#8A6450;--line:#FBE6D6;--accent:#B84A1C;--pink:#F9B8B0;--yellow:#FFE08A;--teal:#A8E6D8;--violet:#C9D8F8;--orange:#FFC49A;--pattern:var(--pat-peach);--deco:var(--dec-peach)}
+@media (prefers-color-scheme:dark){:root[data-palette="peach"]:not([data-theme="light"]){--bg:#241812;--surface:#33231A;--ink:#FFF1E6;--muted:#D9B49B;--line:#4F382B;--accent:#FFAE7A}}
+:root[data-palette="peach"][data-theme="dark"]{--bg:#241812;--surface:#33231A;--ink:#FFF1E6;--muted:#D9B49B;--line:#4F382B;--accent:#FFAE7A}
+:root[data-palette="matcha"]{--bg:#F6F8EE;--surface:#FFFFFF;--ink:#2E3A22;--muted:#667553;--line:#E1E8CF;--accent:#4F7A1F;--pink:#F4BBC6;--yellow:#F4E3A0;--teal:#B5E3CF;--violet:#D3D9F7;--orange:#F2C9A0;--pattern:var(--pat-matcha);--deco:var(--dec-matcha)}
+@media (prefers-color-scheme:dark){:root[data-palette="matcha"]:not([data-theme="light"]){--bg:#151B10;--surface:#1F2917;--ink:#F0F7E3;--muted:#A9B98C;--line:#34421F;--accent:#B6DB6C}}
+:root[data-palette="matcha"][data-theme="dark"]{--bg:#151B10;--surface:#1F2917;--ink:#F0F7E3;--muted:#A9B98C;--line:#34421F;--accent:#B6DB6C}
+.sw[data-pal="ungu"] .swp{--spat:var(--pat-ungu)}.sw[data-pal="mint"] .swp{--spat:var(--pat-mint)}.sw[data-pal="sakura"] .swp{--spat:var(--pat-sakura)}.sw[data-pal="peach"] .swp{--spat:var(--pat-peach)}.sw[data-pal="matcha"] .swp{--spat:var(--pat-matcha)}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:var(--accent);opacity:.07;-webkit-mask-image:var(--pattern);mask-image:var(--pattern);-webkit-mask-size:160px 160px;mask-size:160px 160px}
+:root[data-theme="dark"] body::before{opacity:.11}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) body::before{opacity:.11}}
+.profit{position:relative;overflow:hidden}
+.profit>*{position:relative;z-index:1}
+.profit::after{content:"";position:absolute;right:-10px;bottom:-14px;width:170px;height:170px;background:var(--accent);opacity:.13;-webkit-mask:var(--deco) no-repeat center/contain;mask:var(--deco) no-repeat center/contain;pointer-events:none;z-index:0}
+.acc{display:none}
+:root:not([data-palette]) .acc-ungu,:root[data-palette="ungu"] .acc-ungu,:root[data-palette="mint"] .acc-mint,:root[data-palette="sakura"] .acc-sakura,:root[data-palette="peach"] .acc-peach,:root[data-palette="matcha"] .acc-matcha{display:inline}
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin:14px 0}
+.sw{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:18px;padding:10px;cursor:pointer;text-align:left;font:700 14px 'DM Sans',sans-serif;display:flex;flex-direction:column;gap:8px}
+.sw:hover{border-color:var(--accent)}
+.sw[aria-checked="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.swp{position:relative;height:70px;border-radius:12px;overflow:hidden;background:var(--sbg);border:2px solid var(--sline)}
+.swp::before{content:"";position:absolute;inset:0;background:var(--sac);opacity:.2;-webkit-mask-image:var(--spat);mask-image:var(--spat);-webkit-mask-size:80px 80px;mask-size:80px 80px}
+.swp i{position:absolute;bottom:8px;width:18px;height:18px;border-radius:50%}
+.swp b{position:absolute;top:8px;left:8px;width:46px;height:8px;border-radius:99px;background:var(--sac)}
+.modebar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.modebar span{font-weight:700;color:var(--muted)}
+
 /* layar memeriksa akun */
 .boot{min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
 .boot .logo{margin:0}
@@ -371,6 +406,11 @@ dialog .btns{margin-top:14px;justify-content:flex-end}
                 <ellipse cx="33" cy="56" rx="7" ry="4.5" fill="#F4B6B6" opacity=".6"/><ellipse cx="87" cy="56" rx="7" ry="4.5" fill="#F4B6B6" opacity=".6"/>
                 <ellipse cx="60" cy="54" rx="4" ry="3" fill="#E58E9B"/>
                 <path d="M60 57v3M54 61c3 2 9 2 12 0" stroke="#2B2850" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+                <g class="acc acc-ungu"><path d="M60 1l2.6 6.4L69 10l-6.4 2.6L60 19l-2.6-6.4L51 10l6.4-2.6z" fill="#FFD66B"/></g>
+                <g class="acc acc-mint"><path d="M60 15C52 5 66 0 73 4C71 12 65 17 60 15z" fill="#5BBF9F"/><path d="M60 15C64 11 68 8 71 6" stroke="#2F8F76" stroke-width="1.2" fill="none" stroke-linecap="round"/></g>
+                <g class="acc acc-sakura"><g fill="#FF8FB8"><circle cx="34" cy="7" r="4"/><circle cx="39.7" cy="11.1" r="4"/><circle cx="37.5" cy="17.9" r="4"/><circle cx="30.5" cy="17.9" r="4"/><circle cx="28.3" cy="11.1" r="4"/></g><circle cx="34" cy="13" r="2.6" fill="#FFE08A"/></g>
+                <g class="acc acc-peach"><rect x="33" y="39" width="21" height="13" rx="5.5" fill="#2B2850" opacity=".92"/><rect x="66" y="39" width="21" height="13" rx="5.5" fill="#2B2850" opacity=".92"/><path d="M54 44h12" stroke="#2B2850" stroke-width="2" stroke-linecap="round"/><path d="M37 43l4-1.5M70 43l4-1.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".7"/></g>
+                <g class="acc acc-matcha"><path d="M60 15C58 6 50 3 45 5C47 11 53 16 60 15z" fill="#7FA83A"/><path d="M60 15C62 6 70 3 75 5C73 11 67 16 60 15z" fill="#5B7F2A"/></g>
               </svg>
             </div>
           </div>
@@ -488,6 +528,18 @@ dialog .btns{margin-top:14px;justify-content:flex-end}
                 <small class="sub" style="margin:0">Setelah diubah, perangkat lain akan otomatis keluar.</small>
               </div>
             </form>
+            <section class="panel" id="themePanel" style="grid-column:1/-1">
+              <h3>Tampilan</h3>
+              <p class="sub" style="margin-top:2px">Pilih tema warna. Setiap tema punya motif latar, hiasan di Beranda, dan aksesori maskot sendiri.</p>
+              <div class="swatches" id="swatches" role="radiogroup" aria-label="Tema warna"></div>
+              <div class="modebar" id="modebar" role="group" aria-label="Mode terang atau gelap">
+                <span>Mode</span>
+                <button type="button" class="chip" data-mode="">Otomatis</button>
+                <button type="button" class="chip" data-mode="light">Terang</button>
+                <button type="button" class="chip" data-mode="dark">Gelap</button>
+              </div>
+              <small class="sub" style="margin:10px 0 0;display:block">Pilihan tersimpan di perangkat ini.</small>
+            </section>
           </div>
         </section>
       </div>
@@ -585,7 +637,7 @@ function load(){
   ];
 }
 // ====== PENGATURAN ======
-const API_URL="https://script.google.com/macros/s/AKfycbx8E9ZusUmyFNovxtl6ppMTDTgN7aVSTLu-mOF_0mozD48-eZaiBVuJyKREnGau2Dw/exec"; // URL Web App Google Apps Script (lihat PANDUAN.md)
+const API_URL="https://script.google.com/macros/s/AKfycbwxZRvP3o2zPz7VGmJKAkp-ePL91qZfnsMqniCSqD4jufnVDHS9uDIPffE5MUAnJ0MS/exec"; // URL Web App Google Apps Script (lihat PANDUAN.md)
 // ========================
 const $=id=>document.getElementById(id);
 let token=null,saveTimer=null,mode="login";
@@ -623,7 +675,10 @@ function fieldsHTML(p){
   <label>Platform<select id="${p}platform">${Object.keys(PCOL).map(k=>`<option>${k}</option>`).join("")}</select></label>
   <label id="${p}stageLbl">Tahap<select id="${p}stage">${STAGES.map(([v,l])=>`<option value="${v}">${l}</option>`).join("")}</select></label>
   <label>Mulai (opsional)<input id="${p}start" type="date"></label>
-  <label>Deadline / sampai tanggal<input id="${p}due" type="date" required></label>
+  <label id="${p}dueModeLbl" class="hide">Jenis deadline<select id="${p}dueMode"><option value="">Tanggal tertentu</option><option value="sampai">Sekian hari setelah paket sampai</option></select></label>
+  <label id="${p}dueLbl">Deadline / sampai tanggal<input id="${p}due" type="date" required></label>
+  <label id="${p}dueDaysLbl" class="hide">Deadline berapa hari setelah paket sampai<input id="${p}dueDays" class="daysInp" inputmode="numeric" maxlength="3" placeholder="Contoh: 5" autocomplete="off"></label>
+  <label id="${p}sampaiTglLbl" class="hide">Tanggal paket sampai<input id="${p}sampaiTgl" type="date"></label>
   <label>Jenis kerja sama<select id="${p}kolab"><option value="">Tanpa kerja sama</option><option value="paid">Paid collab</option><option value="barter">Barter</option></select></label>
   <label id="${p}feeLbl" class="hide">Fee (Rupiah)<input id="${p}fee" class="feeInp" inputmode="numeric" placeholder="1.500.000" autocomplete="off"></label>
   <label id="${p}bayarLbl" class="hide">Status pembayaran<select id="${p}bayar">${BAYAR.map(([v,l])=>`<option value="${v}">${l}</option>`).join("")}</select></label>
@@ -647,24 +702,40 @@ function syncKolab(p){
   const show=(id,on)=>$(p+id).classList.toggle("hide",!on);
   show("feeLbl",paid);show("bayarLbl",paid);show("dibayarLbl",paid&&$(p+"bayar").value==="dp");
   show("kirimLbl",k==="barter");
+  const rel=k==="barter"&&$(p+"dueMode").value==="sampai";
+  show("dueModeLbl",k==="barter");show("dueLbl",!rel);show("dueDaysLbl",rel);
+  show("sampaiTglLbl",rel&&$(p+"kirim").value==="sampai");
+  $(p+"due").required=!rel;$(p+"dueDays").required=rel;
   show("brandLbl",!!k);show("picLbl",!!k);show("kontakLbl",!!k);
   show("keranjangLbl",tt);show("boostDaysLbl",tt);show("boostLbl",tt);
   const pf=$(p+"platform").value;show("keranjangPutihLbl",isIgFeed(pf));show("taplinkLbl",pf==="Instagram Story");
   show("stageLbl",!(k==="barter"&&$(p+"kirim").value!=="sampai"));
 }
 function syncRange(p){$(p+"due").min=$(p+"start").value||""}
+// Hitung deadline otomatis kalau jenisnya "sekian hari setelah paket sampai"
+function applyDue(t){
+  if(t.kolab==="barter"&&t.dueMode==="sampai"&&String(t.dueDays||"")!==""){
+    if(t.kirim==="sampai"){
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(t.sampaiTgl||""))t.sampaiTgl=iso(new Date());
+      const d=new Date(t.sampaiTgl+"T00:00:00");d.setDate(d.getDate()+Number(t.dueDays));t.due=iso(d);
+    }else{t.sampaiTgl="";t.due=""}
+  }else{t.dueMode="";t.dueDays="";t.sampaiTgl=""}
+  return t;
+}
 function readFields(p){
   const v=id=>$(p+id).value,kolab=v("kolab"),paid=kolab==="paid",tt=v("platform")==="TikTok",bayar=paid?v("bayar"):"";
-  return{title:v("title").trim(),platform:v("platform"),stage:v("stage"),start:v("start"),due:v("due"),kolab,
+  return applyDue({title:v("title").trim(),platform:v("platform"),stage:v("stage"),start:v("start"),due:v("due"),kolab,
+    dueMode:v("dueMode"),dueDays:digits(v("dueDays")).slice(0,3),sampaiTgl:v("sampaiTgl"),
     fee:paid?digits(v("fee")):"",bayar,dibayar:bayar==="dp"?digits(v("dibayar")):"",
     kirim:kolab==="barter"?v("kirim"):"",
     brand:kolab?v("brand").trim():"",pic:kolab?v("pic").trim():"",kontak:kolab?v("kontak").trim():"",
     keranjang:tt?kjVal(v("keranjang")):"",boostDays:tt?digits(v("boostDays")).slice(0,3):"",boost:tt?v("boost").trim():"",linkProduk:v("linkProduk").split(/\r?\n/).map(x=>x.trim()).filter(Boolean).slice(0,10).join("\n"),keranjangPutih:isIgFeed(v("platform"))?yaVal(v("keranjangPutih")):"",taplink:v("platform")==="Instagram Story"?yaVal(v("taplink")):"",linkBrief:v("linkBrief").trim(),
-    note:v("note").trim(),sow:v("sow").trim()};
+    note:v("note").trim(),sow:v("sow").trim()});
 }
 function fillFields(p,t){
   const set=(id,val)=>{$(p+id).value=val==null?"":val};
   set("title",t.title);set("platform",PCOL[t.platform]?t.platform:"Lainnya");set("stage",t.stage);set("start",t.start);set("due",t.due);
+  set("dueMode",t.dueMode);set("dueDays",t.dueDays);set("sampaiTgl",t.sampaiTgl);
   set("kolab",t.kolab||"");set("fee",rupiah(t.fee).replace("Rp ",""));set("bayar",t.bayar||"belum");set("dibayar",rupiah(t.dibayar).replace("Rp ",""));
   set("kirim",t.kirim||"belum");set("brand",t.brand);set("pic",t.pic);set("kontak",t.kontak);
   set("keranjang",kjVal(t.keranjang));set("keranjangPutih",yaVal(t.keranjangPutih));set("taplink",yaVal(t.taplink));set("boostDays",t.boostDays);set("boost",t.boost);set("linkProduk",t.linkProduk||t.link);set("linkBrief",t.linkBrief);
@@ -674,7 +745,7 @@ function fillFields(p,t){
 $("addFields").innerHTML=fieldsHTML("a");
 $("editFields").innerHTML=fieldsHTML("e");
 document.addEventListener("change",e=>{
-  const m=/^([ae])(kolab|kirim|platform|bayar)$/.exec(e.target.id||"");if(m)syncKolab(m[1]);
+  const m=/^([ae])(kolab|kirim|platform|bayar|dueMode)$/.exec(e.target.id||"");if(m)syncKolab(m[1]);
   if(e.target.id==="astart")syncRange("a");if(e.target.id==="estart")syncRange("e");
 });
 document.addEventListener("input",e=>{if(e.target.classList.contains("daysInp"))e.target.value=digits(e.target.value).slice(0,3);
@@ -786,11 +857,35 @@ function showView(v){
 document.addEventListener("click",e=>{const b=e.target.closest("[data-view]");if(b)showView(b.dataset.view)});
 $("menuBtn").addEventListener("click",()=>{$("side").classList.add("open");$("scrim").classList.add("show")});
 $("scrim").addEventListener("click",closeDrawer);
-$("themeBtn").addEventListener("click",()=>{
+/* ---------- tema ---------- */
+const PALETTES=[["ungu","Ungu Pastel","#F8F6FF","#6554D6","#F9B4CC","#FFE3A0","#C3B8FA","#ECE8FA"],["mint","Mint Segar","#F1FBF7","#17806E","#F8BFD0","#FFE9A6","#B8DFF5","#D4EFE5"],["sakura","Sakura","#FFF5F8","#C72F69","#F7A8C4","#FFE3A0","#D8C6F7","#F9DCE6"],["peach","Peach Sunset","#FFF8F2","#B84A1C","#F9B8B0","#FFE08A","#C9D8F8","#FBE6D6"],["matcha","Matcha","#F6F8EE","#4F7A1F","#F4BBC6","#F4E3A0","#D3D9F7","#E1E8CF"]];
+const curPal=()=>document.documentElement.dataset.palette||"ungu";
+const curMode=()=>document.documentElement.dataset.theme||"";
+function setPalette(k){
+  const P=PALETTES.find(x=>x[0]===k)||PALETTES[0],r=document.documentElement;
+  if(P[0]==="ungu")delete r.dataset.palette;else r.dataset.palette=P[0];
+  try{localStorage.setItem(KEY+":palette",P[0])}catch(e){}
+  const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=P[6];
+  renderThemePanel();
+}
+function setModeTema(m){
   const r=document.documentElement;
-  const dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme:dark)").matches;
-  r.dataset.theme=dark?"light":"dark";
+  if(m)r.dataset.theme=m;else delete r.dataset.theme;
+  try{localStorage.setItem(KEY+":mode",m)}catch(e){}
+  renderThemePanel();
+}
+function renderThemePanel(){
+  $("swatches").innerHTML=PALETTES.map(([k,n,bg,ac,pk,ye,vi,ln])=>`<button type="button" class="sw" role="radio" aria-checked="${curPal()===k}" data-pal="${k}">
+    <span class="swp" style="--sbg:${bg};--sac:${ac};--sline:${ln}"><b></b><i style="left:8px;background:${pk}"></i><i style="left:30px;background:${ye}"></i><i style="left:52px;background:${vi}"></i></span>${n}</button>`).join("");
+  document.querySelectorAll("#modebar [data-mode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===curMode())));
+}
+$("swatches").addEventListener("click",e=>{const b=e.target.closest("[data-pal]");if(b)setPalette(b.dataset.pal)});
+$("modebar").addEventListener("click",e=>{const b=e.target.closest("[data-mode]");if(b)setModeTema(b.dataset.mode)});
+$("themeBtn").addEventListener("click",()=>{
+  const dark=curMode()?curMode()==="dark":matchMedia("(prefers-color-scheme:dark)").matches;
+  setModeTema(dark?"light":"dark");
 });
+renderThemePanel();
 
 /* ---------- akun ---------- */
 function enter(r){
@@ -859,6 +954,7 @@ const waiting=t=>t.kolab==="barter"&&t.kirim!=="sampai";
 const effStage=t=>waiting(t)?"menunggu":t.stage;
 function dueInfo(t){
   if(effStage(t)==="selesai")return["Selesai","done"];
+  if(!t.due)return[t.dueDays?"H+"+t.dueDays+" setelah paket sampai":"Tanpa deadline",""];
   const diff=Math.round((new Date(t.due+"T00:00:00")-new Date(iso(new Date())+"T00:00:00"))/864e5);
   if(diff<0)return["Terlambat "+(-diff)+" hari","late"];
   if(diff===0)return["Hari ini","today"];
@@ -910,8 +1006,12 @@ function metaHTML(t){
   });
   return h;
 }
-const hasRange=t=>t.start&&t.start!==t.due;
-const rangeText=t=>hasRange(t)?"Periode "+fmt(t.start)+" – "+fmt(t.due):"Deadline "+fmt(t.due);
+const hasRange=t=>t.start&&t.due&&t.start!==t.due;
+const rangeText=t=>{
+  const rel=t.dueMode==="sampai"?t.dueDays+" hari setelah paket sampai":"";
+  if(!t.due)return rel?"Deadline "+rel+" (paket belum sampai)":"Tanpa deadline";
+  return(hasRange(t)?"Periode "+fmt(t.start)+" – "+fmt(t.due):"Deadline "+fmt(t.due))+(rel?" ("+rel+")":"");
+};
 function render(){
   const open=tasks.filter(t=>effStage(t)!=="selesai");
   const today=open.filter(t=>dueInfo(t)[1]==="today").length;
@@ -927,7 +1027,7 @@ function render(){
 
   const cols=tasks.some(waiting)?[["menunggu","Menunggu barang"],...STAGES]:STAGES;
   $("board").innerHTML=cols.map(([k,label])=>{
-    const items=tasks.filter(t=>effStage(t)===k&&(filter==="semua"||t.platform===filter)).sort((a,b)=>a.due.localeCompare(b.due));
+    const items=tasks.filter(t=>effStage(t)===k&&(filter==="semua"||t.platform===filter)).sort((a,b)=>String(a.due||"9999-99-99").localeCompare(String(b.due||"9999-99-99")));
     const cards=items.map(t=>{
       const [txt,cls]=dueInfo(t);
       return `<article class="card">
@@ -1066,7 +1166,7 @@ $("f").addEventListener("submit",e=>{
 });
 $("board").addEventListener("change",e=>{
   if(e.target.dataset.sow){const s=tasks.find(x=>x.id===e.target.dataset.sow);if(s){s.sow=e.target.value.trim();save()}return}
-  if(e.target.dataset.kirim){const t=tasks.find(x=>x.id===e.target.dataset.kirim);if(t){t.kirim=e.target.value;save();render()}return}
+  if(e.target.dataset.kirim){const t=tasks.find(x=>x.id===e.target.dataset.kirim);if(t){t.kirim=e.target.value;applyDue(t);save();render()}return}
   const id=e.target.dataset.id;if(!id)return;
   const t=tasks.find(x=>x.id===id);if(t){t.stage=e.target.value;save();render()}
 });
