@@ -637,10 +637,10 @@ function load(){
   ];
 }
 // ====== PENGATURAN ======
-const API_URL="https://script.google.com/macros/s/AKfycbwxZRvP3o2zPz7VGmJKAkp-ePL91qZfnsMqniCSqD4jufnVDHS9uDIPffE5MUAnJ0MS/exec"; // URL Web App Google Apps Script (lihat PANDUAN.md)
+const API_URL="https://script.google.com/macros/s/AKfycbz0-6CsMOutApAowBVnWXFKvdPsduWEek4IGfvTTKFWDa3lp3de1NniJcdPF2AcKNNL/exec"; // URL Web App Google Apps Script (lihat PANDUAN.md)
 // ========================
 const $=id=>document.getElementById(id);
-let token=null,saveTimer=null,mode="login";
+let token=null,saveTimer=null,mode="login",dataVer=null,pending=false;
 try{token=localStorage.getItem(KEY+":token")}catch(e){}
 function setSync(t,c){$("sync").textContent=t;$("sync").className="pill "+(c||"")}
 async function api(body){
@@ -650,15 +650,31 @@ async function api(body){
 function save(){
   try{localStorage.setItem(KEY,JSON.stringify(tasks));localStorage.setItem(KEY+":exp",JSON.stringify(expenses));localStorage.setItem(KEY+":target",target)}catch(e){}
   if(!API_URL||!token)return;
-  setSync("Menyimpan…","warn");clearTimeout(saveTimer);
+  setSync("Menyimpan…","warn");clearTimeout(saveTimer);pending=true;
   saveTimer=setTimeout(async()=>{
     try{
-      const r=await api({action:"save",token,tasks,expenses,target});
-      if(r.ok)setSync("Tersimpan di spreadsheet ✓","ok");
-      else if(r.expired)logout(true);
+      const body={action:"save",token,tasks,expenses,target};
+      if(dataVer!==null)body.version=dataVer;
+      const r=await api(body);
+      if(r.ok){if(r.version!=null)dataVer=String(r.version);pending=false;setSync("Tersimpan di spreadsheet ✓","ok")}
+      else if(r.expired){pending=false;logout(true)}
+      else if(r.conflict){
+        pending=false;
+        const muat=confirm("Data ini sudah diubah dari perangkat lain.\n\nOK = muat data terbaru (perubahan di layar ini yang belum tersimpan akan hilang).\nBatal = timpa data terbaru dengan data di layar ini.");
+        if(muat){applyData(r.latest);render();setSync("Dimuat dari data terbaru ✓","ok")}
+        else{dataVer=String(r.version);save()}
+      }
       else setSync(r.error||"Gagal menyimpan","warn");
     }catch(e){setSync("Gagal menyimpan, data masih di browser ini","warn")}
   },800);
+}
+// Terapkan data dari server (dipakai saat konflik dan saat kembali ke tab)
+function applyData(r){
+  tasks=r.tasks||[];migrasi();
+  if(Array.isArray(r.expenses))expenses=r.expenses;
+  if(typeof r.target==="string")target=r.target;
+  if(r.version!=null)dataVer=String(r.version);
+  try{localStorage.setItem(KEY,JSON.stringify(tasks));localStorage.setItem(KEY+":exp",JSON.stringify(expenses));localStorage.setItem(KEY+":target",target)}catch(e){}
 }
 
 /* ---------- field konten (dipakai form tambah & dialog edit) ---------- */
@@ -889,7 +905,7 @@ renderThemePanel();
 
 /* ---------- akun ---------- */
 function enter(r){
-  token=r.token;try{localStorage.setItem(KEY+":token",token)}catch(e){}
+  token=r.token;dataVer=r.version!=null?String(r.version):null;try{localStorage.setItem(KEY+":token",token)}catch(e){}
   tasks=r.tasks||[];const berubah=migrasi();try{localStorage.setItem(KEY,JSON.stringify(tasks))}catch(e){}
   if(Array.isArray(r.expenses)){expenses=r.expenses;try{localStorage.setItem(KEY+":exp",JSON.stringify(expenses))}catch(e){}}
   if(typeof r.target==="string"){target=r.target;try{localStorage.setItem(KEY+":target",target)}catch(e){}}
@@ -924,6 +940,14 @@ function setMode(m){
   $("apass").autocomplete=(m==="register"||m==="reset")?"new-password":"current-password";
   $("authMsg").textContent="";$("authMsg").className="msg";
 }
+// Kembali ke tab ini: ambil data terbaru kalau perangkat lain sudah mengubahnya
+document.addEventListener("visibilitychange",async()=>{
+  if(document.visibilityState!=="visible"||!API_URL||!token||pending)return;
+  try{
+    const r=await api({action:"load",token});
+    if(r.ok&&!pending&&r.version!=null&&String(r.version)!==dataVer){applyData(r);render();setSync("Diperbarui dari perangkat lain ✓","ok")}
+  }catch(e){}
+});
 async function initCloud(){
   if(!API_URL){ // mode lokal tanpa server
     let p=null;try{p=JSON.parse(localStorage.getItem(KEY+":profile"))}catch(e){}
