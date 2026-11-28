@@ -380,7 +380,9 @@ dialog.pv .btns{margin-top:12px}
 #viewJadwal .head{margin-bottom:16px}
 #viewJadwal .stats{margin-bottom:16px}
 #viewJadwal .addbar{margin-bottom:16px}
-.fbox{padding:14px;display:flex;flex-direction:column;gap:12px;margin-bottom:18px}
+.fbox{padding:14px;display:flex;flex-direction:column;gap:12px;margin-bottom:12px}
+.pbox{margin-bottom:18px;gap:10px}
+.flabel{font-weight:700;font-size:13px;color:var(--muted)}
 .fbox .sbar{margin:0;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1.25fr) minmax(0,1.25fr) minmax(0,1.1fr) auto;gap:10px}
 .fbox .sbar input,.fbox .sbar select{width:100%;flex:none}
 .fbox .rcount{margin:0}
@@ -570,7 +572,10 @@ dialog.pv .btns{flex-wrap:wrap;justify-content:flex-end}
             <button class="mini" id="fReset" type="button">Reset</button>
           </div>
           <p class="rcount" id="rcount" role="status"></p>
-          <div class="tools" id="tools"></div>
+          </div>
+          <div class="panel fbox pbox">
+            <span class="flabel">Platform</span>
+            <div class="tools" id="tools"></div>
           </div>
           <div class="board" id="board"></div>
         </section>
