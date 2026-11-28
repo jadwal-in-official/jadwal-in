@@ -402,6 +402,20 @@ dialog.pv .btns{margin-top:12px}
 dialog.pv .btns{flex-wrap:wrap;justify-content:flex-end}
 @media(max-width:560px){dialog.pv .btns .btn{flex:1 1 calc(50% - 8px);text-align:center}}
 #cachePanel{grid-column:1/-1}
+
+/* ===== checklist deliverable ===== */
+.ck .cklist{display:flex;flex-direction:column;gap:2px;margin:8px 0}
+.ckrow{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.ckrow label{flex-direction:row;align-items:flex-start;gap:10px;flex:1;min-width:0;padding:6px 0;font-size:13px;font-weight:500;color:var(--ink);cursor:pointer}
+.ckrow input[type=checkbox]{width:20px;height:20px;flex:none;margin:0;padding:0;accent-color:var(--accent)}
+.ckrow span{overflow-wrap:anywhere}
+.ckrow.done span{text-decoration:line-through;opacity:.6}
+.ckrow .mini{min-height:30px;min-width:30px;padding:0 8px;font-size:16px}
+.ckpre{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}
+.ckpre .chip{padding:2px 10px;font-size:12px}
+.ckadd{display:flex;gap:6px;margin:6px 0 4px}
+.ckadd input{font-size:13px;padding:8px 10px}
+.ckadd .mini{min-height:38px}
 /* pratinjau invoice di HP: kolom deskripsi tidak boleh tergencet */
 .paper{overflow-wrap:break-word}
 .paper td:first-child{min-width:96px}
@@ -839,7 +853,7 @@ function load(){
   ];
 }
 // ====== PENGATURAN ======
-const API_URL="https://script.google.com/macros/s/AKfycbwGxT6M6z7-u2mvIEG1ppVdrzGRVtB2kwOirX87gt1IkQ4g1g-eSGugkUoRHAuvedgu/exec"; // URL Web App Google Apps Script (lihat PANDUAN.md)
+const API_URL="https://script.google.com/macros/s/AKfycbwxD5GjrkvCBHCYkBjE1bRDI801QYqWMAupP8Jra5FT_ShVHp9ZdWTGvKcu_t8QWh0F/exec"; // URL Web App Google Apps Script (lihat PANDUAN.md)
 // ========================
 const $=id=>document.getElementById(id);
 let token=null,saveTimer=null,mode="login",dataVer=null,pending=false;
@@ -878,7 +892,7 @@ function save(){
 }
 // Terapkan data dari server (dipakai saat konflik dan saat kembali ke tab)
 function applyData(r){
-  tasks=r.tasks||[];migrasi();
+  tasks=mergeExtras(r.tasks||[]);migrasi();
   if(Array.isArray(r.expenses))expenses=r.expenses;
   if(typeof r.target==="string")target=r.target;
   ingestX(r);
@@ -922,6 +936,7 @@ function fieldsHTML(p){
   <label class="full">Link produk (opsional, boleh lebih dari satu, satu link per baris)<textarea id="${p}linkProduk" rows="3" maxlength="3000" placeholder="https://... (link produk 1)&#10;https://... (link produk 2)" autocomplete="off"></textarea></label>
   <label class="full">Link brief (opsional)<input id="${p}linkBrief" type="text" maxlength="300" placeholder="https://... (link brief)" autocomplete="off" inputmode="url"></label>
   <label class="full">SOW (Scope of Work)<textarea id="${p}sow" maxlength="1000" rows="4" placeholder="Contoh:&#10;- 1 video 30 detik, format 9:16&#10;- 2x revisi&#10;- Tayang paling lambat H+1 setelah approval"></textarea></label>
+  <label class="full">Checklist deliverable (opsional, satu per baris)<textarea id="${p}checklist" rows="4" maxlength="2500" placeholder="2 VT TikTok&#10;Mirror ke Instagram Reels&#10;Hashtag wajib: #brand #ad&#10;Tag @brand di caption" autocomplete="off"></textarea></label>
   <label class="full">Catatan (opsional)<textarea id="${p}note" maxlength="200" placeholder="Brief, kolaborasi, link referensi..."></textarea></label>`;
 }
 function syncKolab(p){
@@ -957,7 +972,7 @@ function readFields(p){
     kirim:kolab==="barter"?v("kirim"):"",
     brand:kolab?v("brand").trim():"",pic:kolab?v("pic").trim():"",kontak:kolab?v("kontak").trim():"",
     keranjang:tt?kjVal(v("keranjang")):"",boostDays:tt?digits(v("boostDays")).slice(0,3):"",boost:tt?v("boost").trim():"",linkProduk:v("linkProduk").split(/\r?\n/).map(x=>x.trim()).filter(Boolean).slice(0,10).join("\n"),keranjangPutih:isIgFeed(v("platform"))?yaVal(v("keranjangPutih")):"",taplink:v("platform")==="Instagram Story"?yaVal(v("taplink")):"",linkBrief:v("linkBrief").trim(),
-    note:v("note").trim(),sow:v("sow").trim()});
+    note:v("note").trim(),sow:v("sow").trim(),checklist:readCk(p)});
 }
 function fillFields(p,t){
   const set=(id,val)=>{$(p+id).value=val==null?"":val};
@@ -966,7 +981,7 @@ function fillFields(p,t){
   set("kolab",t.kolab||"");set("fee",rupiah(t.fee).replace("Rp ",""));set("bayar",t.bayar||"belum");set("dibayar",rupiah(t.dibayar).replace("Rp ",""));
   set("kirim",t.kirim||"belum");set("brand",t.brand);set("pic",t.pic);set("kontak",t.kontak);
   set("keranjang",kjVal(t.keranjang));set("keranjangPutih",yaVal(t.keranjangPutih));set("taplink",yaVal(t.taplink));set("boostDays",t.boostDays);set("boost",t.boost);set("linkProduk",t.linkProduk||t.link);set("linkBrief",t.linkBrief);
-  set("sow",t.sow);set("note",t.note); // t.link (data lama) dianggap link produk
+  set("sow",t.sow);set("note",t.note);set("checklist",(t.checklist||[]).map(x=>x.t).join("\n")); // t.link (data lama) dianggap link produk
   syncKolab(p);syncRange(p);
 }
 $("addFields").innerHTML=fieldsHTML("a");
@@ -1120,7 +1135,7 @@ renderThemePanel();
 /* ---------- akun ---------- */
 function enter(r){
   token=r.token;dataVer=r.version!=null?String(r.version):null;try{localStorage.setItem(KEY+":token",token)}catch(e){}
-  tasks=r.tasks||[];const berubah=migrasi();try{localStorage.setItem(KEY,JSON.stringify(tasks))}catch(e){}
+  tasks=mergeExtras(r.tasks||[]);const berubah=migrasi();try{localStorage.setItem(KEY,JSON.stringify(tasks))}catch(e){}
   if(Array.isArray(r.expenses)){expenses=r.expenses;try{localStorage.setItem(KEY+":exp",JSON.stringify(expenses))}catch(e){}}
   if(typeof r.target==="string"){target=r.target;try{localStorage.setItem(KEY+":target",target)}catch(e){}}
   ingestX(r);profile={name:r.name||r.email,email:r.email,photo:r.photo||"",links:r.links||{}};
@@ -1336,11 +1351,12 @@ function render(){
         <div class="badges">
           <span class="tag" style="background:${PCOL[t.platform]||PCOL.Lainnya}">${esc(t.platform)}</span>
           <span class="due ${cls}">${txt}</span>
-          ${kolabBadge(t)}
+          ${kolabBadge(t)}${ckBadge(t)}
         </div>
         ${metaHTML(t)}
         <p>${rangeText(t)}${t.note?" · "+esc(t.note):""}</p>
         <details class="sow"><summary>Scope of Work${t.sow?" ✓":""}</summary><textarea data-sow="${t.id}" rows="5" aria-label="Scope of Work" placeholder="Tulis SOW: deliverables, jumlah revisi, format, brief klien...">${esc(t.sow||"")}</textarea></details>
+        ${ckHTML(t)}
         <div class="row">
           ${waiting(t)
             ?`<select data-kirim="${t.id}" aria-label="Ubah status barang">${KIRIM.map(([v,l])=>`<option value="${v}"${v===(t.kirim||"belum")?" selected":""}>${l}</option>`).join("")}</select>`
@@ -1352,6 +1368,7 @@ function render(){
     return `<details class="col c-${k}" data-col="${k}"${collapsed.has(k)?"":" open"}><summary><h3>${label}<em>${items.length}</em></h3></summary>${cards||'<div class="empty">Belum ada konten</div>'}</details>`;
   }).join("");
   renderRev();renderHome();renderInv();
+  if(ckFocus){const i=document.querySelector('[data-ckin="'+CSS.escape(ckFocus)+'"]');ckFocus=null;if(i)i.focus({preventScroll:true})}
 }
 
 /* ---------- pendapatan ---------- */
@@ -1507,9 +1524,58 @@ $("tools").addEventListener("click",e=>{
   if(e.target.dataset.f){filter=e.target.dataset.f;render()}
 });
 
+
+/* ---------- checklist deliverable (SOW, mirror, hashtag/tag wajib) ---------- */
+let ckFocus=null;const ckOpen=new Set();
+const CK_PRESET=[["+ Video","Video "],["+ Mirror","Mirror ke "],["+ Hashtag wajib","Hashtag wajib: "],["+ Tag brand","Tag akun brand: "],["+ Caption","Caption sesuai brief"],["+ Link bio","Link di bio"]];
+const ckStat=t=>{const L=t.checklist||[];return{n:L.length,d:L.filter(x=>x.done).length}};
+function ckBadge(t){const s=ckStat(t);return s.n?`<span class="due ${s.d===s.n?"done":""}">Checklist ${s.d}/${s.n}</span>`:""}
+function ckHTML(t){
+  const L=t.checklist||[],s=ckStat(t),id=esc(t.id);
+  return `<details class="sow ck" data-ckid="${id}"${ckOpen.has(t.id)?" open":""}><summary>Checklist${s.n?" "+s.d+"/"+s.n:""}${s.n&&s.d===s.n?" ✓":""}</summary>
+    <div class="cklist">${L.map(x=>`<div class="ckrow${x.done?" done":""}"><label><input type="checkbox" data-ck="${id}" data-ci="${esc(x.id)}"${x.done?" checked":""}><span>${esc(x.t)}</span></label><button type="button" class="mini del" data-ckdel="${id}" data-ci="${esc(x.id)}" aria-label="Hapus item ${esc(x.t)}">×</button></div>`).join("")||'<div class="empty">Belum ada item. Catat deliverable, mirror, hashtag atau tag wajib dari brand.</div>'}</div>
+    <div class="ckpre">${CK_PRESET.map(([l,v])=>`<button type="button" class="chip" data-ckp="${esc(v)}" data-ckt="${id}">${l}</button>`).join("")}</div>
+    <div class="ckadd"><input data-ckin="${id}" maxlength="120" placeholder="Tambah item, mis. 2 VT TikTok" aria-label="Item checklist baru" autocomplete="off"><button type="button" class="mini" data-ckadd="${id}">Tambah</button></div>
+  </details>`;
+}
+// dari textarea form (satu item per baris); status centang item lama dipertahankan saat edit
+function readCk(p){
+  const old=p==="e"?((tasks.find(x=>x.id===editingId)||{}).checklist||[]):[],used=new Set();
+  return $(p+"checklist").value.split(/\r?\n/).map(s=>s.trim().slice(0,120)).filter(Boolean).slice(0,30).map(s=>{
+    const o=old.find(x=>x.t===s&&!used.has(x.id));if(o)used.add(o.id);
+    return{id:o?o.id:uid(),t:s,done:o?!!o.done:false};
+  });
+}
+// Backend lama belum menyimpan checklist, keranjang putih, dan Taplink: data di perangkat dipertahankan agar tidak hilang
+function mergeExtras(list){
+  const old=new Map(tasks.map(t=>[t.id,t]));
+  list.forEach(t=>{const o=old.get(t.id);if(!o)return;["checklist","keranjangPutih","taplink"].forEach(k=>{if(t[k]===undefined&&o[k]!==undefined)t[k]=o[k]})});
+  return list;
+}
+function ckAdd(id){
+  const t=tasks.find(x=>x.id===id),inp=document.querySelector('[data-ckin="'+CSS.escape(id)+'"]');if(!t||!inp)return;
+  const v=inp.value.trim().slice(0,120);if(!v)return;
+  t.checklist=t.checklist||[];
+  if(t.checklist.length>=30){alert("Maksimal 30 item checklist per konten.");return}
+  t.checklist.push({id:uid(),t:v,done:false});ckOpen.add(id);ckFocus=id;save();render();
+}
+$("board").addEventListener("change",e=>{
+  const id=e.target.dataset.ck;if(!id)return;
+  const t=tasks.find(x=>x.id===id),it=t&&(t.checklist||[]).find(x=>x.id===e.target.dataset.ci);
+  if(it){it.done=e.target.checked;ckOpen.add(id);save();render()}
+});
+$("board").addEventListener("click",e=>{
+  const add=e.target.closest("[data-ckadd]"),del=e.target.closest("[data-ckdel]"),pre=e.target.closest("[data-ckp]");
+  if(add)ckAdd(add.dataset.ckadd);
+  else if(pre){const i=document.querySelector('[data-ckin="'+CSS.escape(pre.dataset.ckt)+'"]');if(i){i.value=pre.dataset.ckp;i.focus();const n=i.value.length;try{i.setSelectionRange(n,n)}catch(x){}}}
+  else if(del){const t=tasks.find(x=>x.id===del.dataset.ckdel);if(t){t.checklist=(t.checklist||[]).filter(x=>x.id!==del.dataset.ci);ckOpen.add(t.id);save();render()}}
+});
+$("board").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.dataset&&e.target.dataset.ckin){e.preventDefault();ckAdd(e.target.dataset.ckin)}});
+$("board").addEventListener("toggle",e=>{const c=e.target;if(c.dataset&&c.dataset.ckid){const id=c.dataset.ckid;c.open?ckOpen.add(id):ckOpen.delete(id)}},true);
+
 /* ---------- cari & filter ---------- */
 const S={q:"",kolab:"",waktu:"",bayar:""};let revQ="";
-const hay=t=>[t.title,t.brand,t.pic,t.kontak,t.note,t.sow,t.platform].join(" ").toLowerCase();
+const hay=t=>[t.title,t.brand,t.pic,t.kontak,t.note,t.sow,t.platform,(t.checklist||[]).map(x=>x.t).join(" ")].join(" ").toLowerCase();
 function match(t){
   if(S.q&&!hay(t).includes(S.q))return false;
   if(S.kolab&&(t.kolab||"")!==(S.kolab==="none"?"":S.kolab))return false;
